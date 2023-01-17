@@ -1,6 +1,6 @@
 import "../styles/global.css";
 
-import Providers from "../providers";
+import { Providers } from "../providers";
 
 const MyApp: React.FC<any> = ({ Component, pageProps }) => {
   return (

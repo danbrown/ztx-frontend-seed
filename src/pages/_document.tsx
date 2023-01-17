@@ -14,7 +14,7 @@ class MyDocument extends Document {
           {styles}
         </>
       ),
-    };
+    } as any;
   }
 
   render() {

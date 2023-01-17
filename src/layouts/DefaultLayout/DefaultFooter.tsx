@@ -1,6 +1,6 @@
-import { Flex, Typography, Link, Accordion, Box, Container } from "@wipsie/ui";
+import { Flex, Typography, Container } from "@wipsie/ui";
 
-const Footer = () => {
+export const DefaultFooter = () => {
   return (
     <Flex width="100vw" mt={2}>
       <Container
@@ -12,11 +12,9 @@ const Footer = () => {
         fullWidth
       >
         <Typography variant="body1">
-          © 2021 DumbOldSpider LLC All Rights Reserved.
+          © {new Date().getFullYear()} Company - All Rights Reserved.
         </Typography>
       </Container>
     </Flex>
   );
 };
-
-export default Footer;

@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 
 import LoadingScreen from "../components/LoadingScreen";
 
-const LoadingProvider = ({ children }) => {
+export const LoadingProvider = ({ children }) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -24,5 +24,3 @@ const LoadingProvider = ({ children }) => {
     return <>{children}</>;
   }
 };
-
-export default LoadingProvider;

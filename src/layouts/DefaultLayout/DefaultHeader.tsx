@@ -14,9 +14,9 @@ import {
   responsive,
 } from "@wipsie/ui";
 import { MenuOutlined, CloseOutlined } from "@ant-design/icons";
-import ThemeSwitch from "./ThemeSwitch";
+import ThemeSwitch from "@layouts/common/ThemeSwitch";
 
-const Header = () => {
+export const DefaultHeader = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [locked, setLocked] = useScrollBlock();
 
@@ -35,8 +35,8 @@ const Header = () => {
         justify="between"
         shape="square"
       >
-        <a href="https://wipsie.com" style={{ width: responsive(100, 200) }}>
-          <img src="/images/wipsie-logo.svg" alt="Wipsie Logo" />
+        <a href="#" style={{ width: responsive(100, 200) }}>
+          LOGO HERE
         </a>
         <Flex direction="row" align="center" justify="between">
           <ThemeSwitch />
@@ -52,5 +52,3 @@ const Header = () => {
     </Flex>
   );
 };
-
-export default Header;

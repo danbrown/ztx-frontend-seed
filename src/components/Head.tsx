@@ -1,22 +1,32 @@
 import { default as NextHead } from "next/head";
 import { useTheme } from "@wipsie/ui";
+import * as config from "../config";
+
 export interface HeadProps {
   title?: string;
+  useTitlePrefix?: boolean;
   description?: string;
   image?: string;
   url?: string;
+  keywords?: string;
 }
-import * as config from "../config";
 
-const Head: React.FC<HeadProps> = ({ title, description, image, url }) => {
+export const Head: React.FC<HeadProps> = ({
+  title,
+  description,
+  image,
+  url,
+  keywords,
+  useTitlePrefix = true,
+}) => {
   const theme = useTheme();
 
   const pageTitle = title
-    ? title + " | " + config.SITE_TITLE
-    : "Documentation" + " | " + config.SITE_TITLE;
+    ? title + (useTitlePrefix ? ` | ${config.SITE_TITLE}` : "")
+    : config.SITE_TITLE;
 
   return (
-    <NextHead>
+    <NextHead key="head">
       <title>{pageTitle}</title>
       <meta property="og:title" content={pageTitle} key="title" />
       <meta
@@ -35,6 +45,8 @@ const Head: React.FC<HeadProps> = ({ title, description, image, url }) => {
       {url && <meta property="og:url" content={url} />}
       <meta property="og:description" content={description} />
       <meta name="description" content={description} />
+      <meta property="og:keywords" content={keywords} />
+      <meta name="keywords" content={keywords} />
       <meta
         name="msapplication-TileColor"
         content={theme.palette.primary[500]}
@@ -52,5 +64,3 @@ const Head: React.FC<HeadProps> = ({ title, description, image, url }) => {
     </NextHead>
   );
 };
-
-export default Head;
