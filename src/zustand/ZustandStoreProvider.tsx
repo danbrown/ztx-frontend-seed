@@ -1,34 +1,70 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { UnionToIntersection } from "@customTypes/UnionToIntersection.type";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import useSwr, { SWRResponse } from "swr";
+import { OmittedFunctionKeys } from "@customTypes/OmittedFunctionKeys.type";
 
 // Slices
-import { BearSlice, createBearSlice } from "./slices/bear.slice";
-import { FishSlice, createFishSlice } from "./slices/fish.slice";
-import { PostsSlice, createPostsSlice } from "./slices/posts.slice";
-import { GetFunctionKeys } from "@customTypes/GetFunctionKeys.type";
+import {
+  sliceName as sliceName_Bears,
+  SliceType as SliceType_Bears,
+  initialState as initialState_Bears,
+  createSlice as createSlice_Bears,
+} from "./slices/bear.slice";
+import {
+  sliceName as sliceName_Fishes,
+  SliceType as sliceType_Fishes,
+  initialState as initialState_Fishes,
+  createSlice as createSlice_Fishes,
+} from "./slices/fish.slice";
+import {
+  sliceName as sliceName_Posts,
+  SliceType as SliceType_Posts,
+  initialState as initialState_Posts,
+  createSlice as createSlice_Posts,
+} from "./slices/posts.slice";
+import {
+  sliceName as sliceName_Settings,
+  SliceType as SliceType_Settings,
+  initialState as initialState_Settings,
+  createSlice as createSlice_Settings,
+} from "./slices/settings.slice";
 
-// Types
+// & Scoped Types - Joint all slices into one type, scoped
 type ZustandStoreJoints = {
-  bears: BearSlice;
-  fishes: FishSlice;
-  posts: PostsSlice;
+  [sliceName_Bears]: SliceType_Bears;
+  [sliceName_Fishes]: sliceType_Fishes;
+  [sliceName_Posts]: SliceType_Posts;
+  [sliceName_Settings]: SliceType_Settings;
 };
 
+// Merge all slices into one intersection type
 export type ZustandStoreState = UnionToIntersection<
   ZustandStoreJoints[keyof ZustandStoreJoints] // merge slices
 >;
 
+type ZustandStoreInitialState = OmittedFunctionKeys<ZustandStoreState>;
+
+// & Initial State
+const initialState: ZustandStoreInitialState = {
+  ...initialState_Bears,
+  ...initialState_Fishes,
+  ...initialState_Posts,
+  ...initialState_Settings,
+};
+
 // Store
-const usePersistedStore = create<ZustandStoreState>()(
+const useStore = create<ZustandStoreState>()(
   devtools(
     persist(
       (...a) => ({
-        ...createFishSlice(...a),
-        ...createBearSlice(...a),
-        ...createPostsSlice(...a),
+        ...initialState,
+
+        ...createSlice_Bears(...a),
+        ...createSlice_Fishes(...a),
+        ...createSlice_Posts(...a),
+        ...createSlice_Settings(...a),
       }),
 
       { name: "bound-store" }
@@ -37,8 +73,8 @@ const usePersistedStore = create<ZustandStoreState>()(
 );
 
 const useHydratedStore = (): ZustandStoreState => {
-  const [state, setState] = useState({});
-  const zustandState = usePersistedStore((persistedState) => persistedState);
+  const [state, setState] = useState(initialState);
+  const zustandState = useStore((state) => state);
 
   useEffect(() => {
     setState(zustandState);
@@ -53,7 +89,7 @@ export const useZustandStore = <T extends keyof ZustandStoreJoints>(
 ): ZustandStoreJoints[T] => {
   const states = useHydratedStore();
   // console.log("states", key);
-  return states as Pick<ZustandStoreJoints, T>[T]; // filter by key
+  return states as Pick<ZustandStoreJoints, T>[typeof key]; // filter by key
 };
 
 // Store with SWR

@@ -14,6 +14,7 @@ export default function Home(props) {
   return (
     <DefaultLayout>
       {fishes}
+      <NextLink href="/">Um</NextLink>
 
       <Button
         onClick={() => {
@@ -39,7 +40,6 @@ export default function Home(props) {
       >
         Test Promise
       </Button>
-      <NextLink href="/">Um</NextLink>
     </DefaultLayout>
   );
 }

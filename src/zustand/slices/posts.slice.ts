@@ -1,20 +1,25 @@
+import { OmittedFunctionKeys } from "@customTypes/OmittedFunctionKeys.type";
 import { ZustandStoreState } from "@zustand/ZustandStoreProvider";
 import { StateCreator } from "zustand";
 
 // SWR
 export const SWR_POSTS_KEY = "https://jsonplaceholder.typicode.com/posts";
 
-export interface PostsSlice {
+// Zustand
+export const sliceName = "posts";
+
+export const initialState: OmittedFunctionKeys<SliceType> = {
+  posts: [],
+};
+
+export interface SliceType {
   posts: any;
   testPromise: () => Promise<string>;
 }
 
-export const createPostsSlice: StateCreator<
-  ZustandStoreState,
-  [],
-  [],
-  PostsSlice
-> = (set) => ({
+export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
+  set
+) => ({
   posts: [],
 
   testPromise: () => {

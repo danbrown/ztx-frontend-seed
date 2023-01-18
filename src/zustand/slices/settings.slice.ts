@@ -2,24 +2,26 @@ import { OmittedFunctionKeys } from "@customTypes/OmittedFunctionKeys.type";
 import { ZustandStoreState } from "@zustand/ZustandStoreProvider";
 import { StateCreator } from "zustand";
 
+export type ThemeVariants = "light" | "dark" | "cosmic";
+
 // Zustand
-export const sliceName = "fishes";
+export const sliceName = "settings";
 
 export const initialState: OmittedFunctionKeys<SliceType> = {
-  fishes: 0,
+  currentTheme: "dark",
 };
 
 export interface SliceType {
-  fishes: number;
-  addFish: () => void;
+  currentTheme: ThemeVariants;
+  setCurrentTheme: (theme: ThemeVariants) => void;
 }
 
 export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   set
 ) => ({
-  fishes: 0,
-  addFish: () =>
-    set((state) => ({
-      fishes: state.fishes + 1,
-    })),
+  currentTheme: "light",
+
+  setCurrentTheme: (theme: ThemeVariants) => {
+    set({ currentTheme: theme });
+  },
 });

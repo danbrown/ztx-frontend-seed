@@ -5,18 +5,13 @@ import {
   CssBaseline,
   NprogressBaseline,
 } from "@wipsie/ui";
+import { useZustandStore } from "@zustand/ZustandStoreProvider";
 
 export const ThemeProvider = ({ children }) => {
-  // const { theme } = useSelector((state: any) => state.settings);
-
-  // const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   dispatch(settingsInit());
-  // }, [dispatch]);
+  const { currentTheme, setCurrentTheme } = useZustandStore("settings");
 
   return (
-    <WipsieThemeProvider theme={"dark"}>
+    <WipsieThemeProvider theme={currentTheme}>
       {/* <WipsieThemeProvider theme={theme}> */}
       <CssBaseline />
       <NprogressBaseline type="bar" height="3px" />

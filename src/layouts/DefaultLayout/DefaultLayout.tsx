@@ -13,7 +13,7 @@ export const DefaultLayout = ({ meta, children, ...otherProps }: any) => {
     <Page backgroundColor="shade" {...otherProps}>
       <Head {...meta} />
 
-      {/* <DefaultHeader /> */}
+      <DefaultHeader />
 
       <Flex mt={{ xs: -1, md: 2 }} p={2} direction="column">
         {children}

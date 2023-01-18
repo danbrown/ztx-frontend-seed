@@ -1,18 +1,23 @@
+import { OmittedFunctionKeys } from "@customTypes/OmittedFunctionKeys.type";
 import { ZustandStoreState } from "@zustand/ZustandStoreProvider";
 import { StateCreator } from "zustand";
 
-export interface BearSlice {
+// Zustand
+export const sliceName = "bears";
+
+export const initialState: OmittedFunctionKeys<SliceType> = {
+  bears: 0,
+};
+
+export interface SliceType {
   bears: number;
   addBear: () => void;
   eatFish: () => void;
 }
 
-export const createBearSlice: StateCreator<
-  ZustandStoreState,
-  [],
-  [],
-  BearSlice
-> = (set) => ({
+export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
+  set
+) => ({
   bears: 0,
   addBear: () =>
     set((state) => ({
