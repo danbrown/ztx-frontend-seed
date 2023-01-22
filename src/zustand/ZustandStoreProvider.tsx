@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { UnionToIntersection } from "@customTypes/UnionToIntersection.type";
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";

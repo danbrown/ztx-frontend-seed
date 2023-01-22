@@ -1,32 +1,38 @@
-import { ButtonGroup, useTheme, IconButton } from "@wipsie/ui";
+import { useTheme, Button } from "@wipsie/ui";
 import { useZustandStore } from "@zustand/ZustandStoreProvider";
-import { Sun, Moon, Star } from "react-feather";
+import { useState } from "react";
 
 export default function ThemeSwitch(props: any) {
   const theme = useTheme();
 
   const { currentTheme, setCurrentTheme } = useZustandStore("settings");
+  const [isHovering, setIsHovering] = useState(false);
+
+  const themesList = [
+    "dark",
+    "light",
+    // "danbrown",
+    // "neonlights",
+    // "swamp",
+    // "discord",
+    // "spotify",
+    // "whatsapp",
+    // "wipsie",
+  ];
 
   return (
-    <ButtonGroup size="mini">
-      <IconButton
-        variant={currentTheme === "light" ? "outlined" : "contained"}
-        onClick={() => setCurrentTheme("light")}
-      >
-        <Sun />
-      </IconButton>
-      <IconButton
-        variant={currentTheme === "dark" ? "outlined" : "contained"}
-        onClick={() => setCurrentTheme("dark")}
-      >
-        <Moon />
-      </IconButton>
-      <IconButton
-        variant={currentTheme === "cosmic" ? "outlined" : "contained"}
-        onClick={() => setCurrentTheme("cosmic")}
-      >
-        <Star />
-      </IconButton>
-    </ButtonGroup>
+    <Button
+      shape="square"
+      variant="outlined"
+      onClick={() => {
+        const index = themesList.indexOf(currentTheme);
+        const nextIndex = index + 1 >= themesList.length ? 0 : index + 1;
+        setCurrentTheme(themesList[nextIndex] as any);
+      }}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
+      {isHovering ? "Change Theme" : currentTheme}
+    </Button>
   );
 }

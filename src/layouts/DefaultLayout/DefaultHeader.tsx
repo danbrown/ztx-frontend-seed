@@ -12,13 +12,16 @@ import {
   Portal,
   useScrollBlock,
   responsive,
+  useTheme,
 } from "@wipsie/ui";
 import { MenuOutlined, CloseOutlined } from "@ant-design/icons";
 import ThemeSwitch from "@layouts/common/ThemeSwitch";
+import { useZustandStore } from "@zustand/ZustandStoreProvider";
 
 export const DefaultHeader = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [locked, setLocked] = useScrollBlock();
+  const theme = useTheme();
 
   const handleMenuClick = () => {
     setMenuVisible(!menuVisible);
@@ -34,9 +37,16 @@ export const DefaultHeader = () => {
         align="center"
         justify="between"
         shape="square"
+        p={1}
+        pl={2}
+        pr={2}
       >
-        <a href="#" style={{ width: responsive(100, 200) }}>
-          LOGO HERE
+        <a href={`/`} style={{ width: responsive(100, 200) }}>
+          {theme.type === "dark" ? (
+            <img src="/static/logo/white.svg" alt="Zetahex" />
+          ) : (
+            <img src="/static/logo/black.svg" alt="Zetahex" />
+          )}
         </a>
         <Flex direction="row" align="center" justify="between">
           <ThemeSwitch />

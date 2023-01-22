@@ -14,7 +14,7 @@
     "@ant-design/icons": "^5.0.0",
     "@types/next-pwa": "^5.6.1",
     "@wipsie/icons": "^1.0.1",
-    "@wipsie/ui": "^1.0.233",
+    "@wipsie/ui": "^1.0.236",
     "axios": "^1.2.2",
     "classnames": "^2.3.1",
     "next": "^13.1.2",

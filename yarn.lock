@@ -1453,10 +1453,10 @@
   resolved "https://registry.yarnpkg.com/@wipsie/icons/-/icons-1.0.1.tgz#a7db07f2ea81c51ef9a4d729dad005b8a96a0575"
   integrity sha512-LOQcOsFgI+vjfFuIaW639TE+/aE3J0RiS+Shc50dzOuN8oKPrxB0i6Dw0eCX3uBbJd5/f/P8GFUFsMND0wRqTQ==
 
-"@wipsie/ui@^1.0.233":
-  version "1.0.233"
-  resolved "https://registry.yarnpkg.com/@wipsie/ui/-/ui-1.0.233.tgz#b233fc2767f00c9fb3ee137ebde6bba64b11cf8a"
-  integrity sha512-x1JWx0/5a4T0Qyo++zzVknfXba4+ERm1kt4OJ8xF8J2lmG/UfgXcG50j9sF9eQ4u5XE0CBEyLsvFhfePyHmQTQ==
+"@wipsie/ui@^1.0.236":
+  version "1.0.236"
+  resolved "https://registry.yarnpkg.com/@wipsie/ui/-/ui-1.0.236.tgz#aea5555b4b7bda7b01bdbab0f1235d880e0217f1"
+  integrity sha512-OIFSIduvKGuEzoQxOAcPaxW6Ikv/hWyyQOFQReTe46CvWkIdgZ4D1b5tP4zQY6BhT+Sx3nmkdfM9DkHtJwsLpw==
   dependencies:
     classnames "^2.3.1"
     lodash.throttle "^4.1.1"
