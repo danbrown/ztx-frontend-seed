@@ -17,6 +17,7 @@ import {
 import { MenuOutlined, CloseOutlined } from "@ant-design/icons";
 import ThemeSwitch from "@layouts/common/ThemeSwitch";
 import { useZustandStore } from "@zustand/ZustandStoreProvider";
+import { serviceLinks } from "@config/links";
 
 export const DefaultHeader = () => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -41,7 +42,10 @@ export const DefaultHeader = () => {
         pl={2}
         pr={2}
       >
-        <a href={`/`} style={{ width: responsive(100, 200) }}>
+        <a
+          href={`${serviceLinks.main}`}
+          style={{ width: responsive(100, 200) }}
+        >
           {theme.type === "dark" ? (
             <img src="/static/logo/white.svg" alt="Zetahex" />
           ) : (
