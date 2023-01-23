@@ -2,10 +2,12 @@ import {
   Button,
   ButtonProps,
   Container,
+  ContainerProps,
   Divider,
   Flex,
   Grid,
   Input,
+  InputProps,
   Spacing,
   Typography,
   useTheme,
@@ -28,16 +30,17 @@ export default function Home(props) {
 
       <Divider spacing={2} />
 
-      <Container
+      <ZetaContainer
         shape="square"
-        p={6}
-        style={{
-          borderStyle: "solid",
-          borderWidth: 1,
-          borderColor: theme.palette.highlight,
-          clipPath: "url(#cyberCard1H)",
-          WebkitClipPath: "url(#cyberCard1H)",
-        }}
+        p={3}
+        pr={4}
+        style={
+          {
+            // borderStyle: "solid",
+            // borderWidth: 1,
+            // borderColor: theme.palette.highlight,
+          }
+        }
       >
         <Typography variant="h1" color="neutral">
           Hello World
@@ -47,32 +50,25 @@ export default function Home(props) {
           This is a subtitle
         </Typography>
         <Spacing height={1} />
-        <Input
+        <ZetaInput
           shape="square"
           placeholder="Type something..."
           startAdornment={<User01Icon />}
-          wrapperProps={{
-            style: {
-              clipPath: "url(#cyberButton1)",
-              WebkitClipPath: "url(#cyberButton1)",
-            },
-          }}
         />
         <Divider spacing={2} />
         <Typography variant="body1">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Exercitationem, voluptatem?
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Praesentium
+          <br />
+          impedit dignissimos dolor explicabo neque eveniet, ipsum sapiente ex
+          <br />
+          iusto minus.
         </Typography>
         <Spacing height={2} />
-        <Container
+        <ZetaHeader2
           display="flex"
           direction="row"
           shape="square"
           backgroundColor="highlight"
-          style={{
-            clipPath: "url(#cyberHeader2)",
-            WebkitClipPath: "url(#cyberHeader2)",
-          }}
         >
           <Typography variant="h4" color="neutral">
             Fishes:
@@ -81,10 +77,12 @@ export default function Home(props) {
           <Typography variant="h4" color="subtext">
             {fishes}
           </Typography>
-        </Container>
+        </ZetaHeader2>
+
         <Spacing height={4} />
+
         <Grid container>
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid item xs={12} sm={6} md={3}>
             <ZetaButton
               backgroundColor="neutral"
               shape="square"
@@ -96,7 +94,7 @@ export default function Home(props) {
               neutral
             </ZetaButton>
           </Grid>
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid item xs={12} sm={6} md={3}>
             <ZetaButton
               backgroundColor="success"
               shape="square"
@@ -108,7 +106,7 @@ export default function Home(props) {
               Success
             </ZetaButton>
           </Grid>
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid item xs={12} sm={6} md={3}>
             <ZetaButton
               backgroundColor="info"
               shape="square"
@@ -120,7 +118,7 @@ export default function Home(props) {
               Info
             </ZetaButton>
           </Grid>
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid item xs={12} sm={6} md={3}>
             <ZetaButton
               backgroundColor="warning"
               shape="square"
@@ -132,7 +130,7 @@ export default function Home(props) {
               Warning
             </ZetaButton>
           </Grid>
-          <Grid item xs={12} sm={6} md={2}>
+          <Grid item xs={12} sm={6} md={3}>
             <ZetaButton
               startIcon={<User01Icon />}
               backgroundColor="danger"
@@ -146,7 +144,7 @@ export default function Home(props) {
             </ZetaButton>
           </Grid>
         </Grid>
-      </Container>
+      </ZetaContainer>
 
       <code>
         <pre>
@@ -197,7 +195,7 @@ const ZetaMaterials = () => {
             stroke="#000000"
             clipPathUnits="objectBoundingBox"
           >
-            <path d="M0.763,0.923,0.544,0.923,0.493,1,0.452,1,0.411,1,0.275,1,0.275,0.923,0.258,0.923,0.258,1,0.214,1,0.214,0.923,0.198,0.923,0.198,1,0.153,1,0.153,0.923,0.137,0.923,0.137,1,0,1,0,0.888,0,0.873,0,0.1,0.066,0,0.934,0,1,0.1,1,0.888,1,0.888,0.926,1,0.881,1,0.844,1,0.814,1,0.814,1,0.763,0.923" />
+            <path d="M0.949,0,0.949,0,0.82,0,0.587,0,0.408,0,0.119,0,0.046,0,0,0.066,0,0.934,0.046,1,0.119,1,0.401,1,0.408,1,0.459,1,0.587,1,0.82,1,0.942,1,0.949,1,1,1,1,0.863,0.979,0.863,0.979,0.847,1,0.847,1,0.802,0.979,0.802,0.979,0.786,1,0.786,1,0.742,0.979,0.742,0.979,0.725,1,0.725,1,0.589,1,0.548,1,0.507,0.979,0.478,0.979,0.215,1,0.186,1,0.186,1,0.156,1,0.119,1,0.074,0.949,0" />
           </clipPath>
         </defs>
       </svg>
@@ -225,52 +223,146 @@ const ZetaMaterials = () => {
           </clipPath>
         </defs>
       </svg>
+      <svg width="0" height="0">
+        <defs>
+          <clipPath
+            id="cyberIconButton"
+            fill="#FFFFFF"
+            stroke="#000000"
+            clipPathUnits="objectBoundingBox"
+          >
+            <path d="M1,0.175,1,0,0.439,0,0.335,0.098,0,0.098,0,0.846,0.163,1,0.887,1,0.955,1,1,1,1,0.889,1,0.85,1,0.827,0.955,0.784,0.955,0.218,1,0.175" />
+          </clipPath>
+        </defs>
+      </svg>
+      <svg width="0" height="0">
+        <defs>
+          <clipPath
+            id="cyberSideButtonLarge"
+            fill="#FFFFFF"
+            stroke="#000000"
+            clipPathUnits="objectBoundingBox"
+          >
+            <path d="M0.761,0,0.616,0,0.459,0,0.31,0,0.075,0,0,0.228,0,0.824,0.191,0.824,0.31,0.824,0.332,0.824,0.459,0.824,0.541,0.824,0.761,0.824,0.873,0.824,0.931,1,1,1,1,0.824,1,0.814,1,0,0.761,0" />
+          </clipPath>
+        </defs>
+      </svg>
+      <svg width="0" height="0">
+        <defs>
+          <clipPath
+            id="cyberSideButtonSmall"
+            fill="#FFFFFF"
+            stroke="#000000"
+            clipPathUnits="objectBoundingBox"
+          >
+            <path d="M0.164,0,0,0.228,0,0.824,0.724,0.824,0.85,1,1,1,1,0.824,1,0.814,1,0,0.164,0" />
+          </clipPath>
+        </defs>
+      </svg>
     </>
   );
 };
 
-const ZetaButton = ({
-  children,
-  skin = "button2",
-  ref,
-  ...props
-}: ButtonProps & {
-  skin?: "button1" | "button2" | "card1H" | "header1" | "header2";
-}) => {
-  let clipPath;
-  switch (skin) {
-    case "card1H":
-      clipPath = "url(#cyberCard1H)";
-      break;
-    case "button2":
-      clipPath = "url(#cyberButton2)";
-      break;
-
-    case "header1":
-      clipPath = "url(#cyberHeader1)";
-      break;
-
-    case "header2":
-      clipPath = "url(#cyberHeader2)";
-      break;
-
-    case "button1":
-    default:
-      clipPath = "url(#cyberButton1)";
-      break;
-  }
-
+const ZetaButton = ({ children, style = {}, ref, ...props }: ButtonProps) => {
   return (
     <Button
       {...props}
       ref={ref && (ref as any)}
       style={{
-        clipPath: clipPath,
-        WebkitClipPath: clipPath,
-        paddingBottom: "0.6rem",
+        ...style,
+        clipPath: "url(#cyberButton2)",
+        WebkitClipPath: "url(#cyberButton2)",
+        paddingBottom: "0.65rem",
       }}
     >
       {children}
     </Button>
+  );
+};
+
+const ZetaContainer = ({
+  children,
+  style = {},
+  ref,
+  ...props
+}: ContainerProps) => {
+  return (
+    <Container
+      {...props}
+      ref={ref && (ref as any)}
+      style={{
+        ...style,
+        clipPath: "url(#cyberCard1H)",
+        WebkitClipPath: "url(#cyberCard1H)",
+      }}
+    >
+      {children}
+    </Container>
+  );
+};
+
+const ZetaHeader1 = ({
+  children,
+  style = {},
+  ref,
+  ...props
+}: ContainerProps) => {
+  return (
+    <Container
+      {...props}
+      ref={ref && (ref as any)}
+      style={{
+        ...style,
+        clipPath: "url(#cyberHeader1)",
+        WebkitClipPath: "url(#cyberHeader1)",
+      }}
+    >
+      {children}
+    </Container>
+  );
+};
+
+const ZetaHeader2 = ({
+  children,
+  style = {},
+  ref,
+  ...props
+}: ContainerProps) => {
+  return (
+    <Container
+      {...props}
+      ref={ref && (ref as any)}
+      style={{
+        ...style,
+        clipPath: "url(#cyberHeader2)",
+        WebkitClipPath: "url(#cyberHeader2)",
+      }}
+    >
+      {children}
+    </Container>
+  );
+};
+
+const ZetaInput = ({
+  children,
+  wrapperProps = {},
+  ref,
+  ...props
+}: InputProps) => {
+  return (
+    <Input
+      {...props}
+      ref={ref && (ref as any)}
+      wrapperProps={{
+        ...wrapperProps,
+        style: {
+          ...wrapperProps?.style,
+          clipPath: "url(#cyberButton1)",
+          WebkitClipPath: "url(#cyberButton1)",
+        },
+      }}
+    >
+      {children}
+    </Input>
   );
 };
