@@ -87,41 +87,41 @@ const customTypography: WipsieThemesFonts = {
       '"TT Firs Neue","Montserrat", "Open Sans", "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
   },
 
-  body1: {
-    ...lightTheme.font.body1,
-    fontFamily:
-      '"DM Sans","Montserrat", "Open Sans", "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
-  },
+  // body1: {
+  //   ...lightTheme.font.body1,
+  //   fontFamily:
+  //     '"DM Sans","Montserrat", "Open Sans", "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
+  // },
 
-  body2: {
-    ...lightTheme.font.body2,
-    fontFamily:
-      '"DM Sans","Montserrat", "Open Sans", "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
-  },
+  // body2: {
+  //   ...lightTheme.font.body2,
+  //   fontFamily:
+  //     '"DM Sans","Montserrat", "Open Sans", "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
+  // },
 
-  caption1: {
-    ...lightTheme.font.caption1,
-    fontFamily:
-      '"DM Sans","Montserrat", "Open Sans", "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
-  },
+  // caption1: {
+  //   ...lightTheme.font.caption1,
+  //   fontFamily:
+  //     '"DM Sans","Montserrat", "Open Sans", "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
+  // },
 
-  caption2: {
-    ...lightTheme.font.caption2,
-    fontFamily:
-      '"DM Sans","Montserrat", "Open Sans", "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
-  },
+  // caption2: {
+  //   ...lightTheme.font.caption2,
+  //   fontFamily:
+  //     '"DM Sans","Montserrat", "Open Sans", "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
+  // },
 
-  label: {
-    ...lightTheme.font.label,
-    fontFamily:
-      '"DM Sans","Montserrat", "Open Sans", "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
-  },
+  // label: {
+  //   ...lightTheme.font.label,
+  //   fontFamily:
+  //     '"DM Sans","Montserrat", "Open Sans", "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
+  // },
 
-  code: {
-    ...lightTheme.font.code,
-    fontFamily:
-      '"DM Sans","Montserrat", "Open Sans", "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
-  },
+  // code: {
+  //   ...lightTheme.font.code,
+  //   fontFamily:
+  //     '"DM Sans","Montserrat", "Open Sans", "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
+  // },
 };
 
 const darkCustomTheme: WipsieThemes = {
