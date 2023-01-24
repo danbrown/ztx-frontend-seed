@@ -19,7 +19,7 @@ export interface SliceType {
 export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   set
 ) => ({
-  currentTheme: "light",
+  currentTheme: "dark",
 
   setCurrentTheme: (theme: ThemeVariants) => {
     set({ currentTheme: theme });
