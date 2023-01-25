@@ -1,6 +1,6 @@
 // SITE CONSTANTS
-export const SITE_TITLE = "Ztx Base";
-export const SITE_DESCRIPTION = "Ztx Base";
+export const SITE_TITLE = "Zetahex";
+export const SITE_DESCRIPTION = "Zetahex";
 export const SITE_URL =
   process.env.NODE_ENV === "production"
     ? "https://example.com"
