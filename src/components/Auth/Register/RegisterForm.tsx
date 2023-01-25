@@ -104,10 +104,44 @@ export const RegisterForm = () => {
             placeholder="Confirm Password"
             type="password"
           />
+          <Spacing height={1} />
         </Grid>
 
         <Grid item xs={12}>
+          <Button fullWidth variant="contained" onClick={nextTab}>
+            Next
+          </Button>
+        </Grid>
+      </>
+    );
+  };
+
+  const FormTab2 = () => {
+    return (
+      <>
+        <Grid item xs={12}>
+          <Typography variant="h5" color="subtext" align="left">
+            Name
+          </Typography>
           <Spacing height={1} />
+          <Input fullWidth startAdornment={<User01Icon />} placeholder="Name" />
+          <Spacing height={1} />
+        </Grid>
+
+        <Grid item xs={12}>
+          <Typography variant="h5" color="subtext" align="left">
+            Email Address
+          </Typography>
+          <Spacing height={1} />
+          <Input
+            fullWidth
+            startAdornment={<Mail01Icon />}
+            placeholder="Email Address"
+          />
+          <Spacing height={2} />
+        </Grid>
+
+        <Grid item xs={12}>
           <Flex direction="row" justify="start" wrap="nowrap">
             <CheckBox
               tabIndex={4}
@@ -141,52 +175,18 @@ export const RegisterForm = () => {
           <Spacing height={1} />
         </Grid>
 
-        <Grid item xs={12}>
-          <Button
-            fullWidth
-            variant="contained"
-            onClick={nextTab}
-            disabled={!termsAndConditionsChecked}
-          >
-            Next
-          </Button>
-        </Grid>
-      </>
-    );
-  };
-
-  const FormTab2 = () => {
-    return (
-      <>
-        <Grid item xs={12}>
-          <Typography variant="h5" color="subtext" align="left">
-            Name
-          </Typography>
-          <Spacing height={1} />
-          <Input fullWidth startAdornment={<User01Icon />} placeholder="Name" />
-          <Spacing height={1} />
-        </Grid>
-
-        <Grid item xs={12}>
-          <Typography variant="h5" color="subtext" align="left">
-            Email Address
-          </Typography>
-          <Spacing height={1} />
-          <Input
-            fullWidth
-            startAdornment={<Mail01Icon />}
-            placeholder="Email Address"
-          />
-          <Spacing height={2} />
-        </Grid>
-
         <Grid item xs={12} md={6}>
           <Button fullWidth variant="outlined" onClick={prevTab}>
             Back
           </Button>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Button fullWidth variant="contained" onClick={handleRegister}>
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={handleRegister}
+            disabled={!termsAndConditionsChecked}
+          >
             Register
           </Button>
         </Grid>
@@ -215,6 +215,15 @@ export const RegisterForm = () => {
             1: <FormTab2 />,
           }[currentTab]
         }
+
+        <Grid item xs={12}>
+          <Spacing height={2} />
+          <Flex fullWidth align="center" justify="center" direction="column">
+            <NextLink href={`${serviceLinks.auth.login}`}>
+              Already have an account? Login
+            </NextLink>
+          </Flex>
+        </Grid>
       </Grid>
     </Flex>
   );
