@@ -12,15 +12,17 @@ export const Config = () => {
   return (
     <>
       {authenticated && user ? (
-        <IconButton size="small" shape="round">
-          <Avatar
-            xs="small"
-            src={user?.avatar}
-            alt={user?.name}
-            title={user?.name}
-            backgroundColor="basic"
-          />
-        </IconButton>
+        <NextLink href={`${serviceLinks.accountDashboard}`}>
+          <IconButton size="small" shape="round">
+            <Avatar
+              xs="small"
+              src={user?.avatar}
+              alt={user?.name}
+              title={user?.name}
+              backgroundColor="basic"
+            />
+          </IconButton>
+        </NextLink>
       ) : (
         <NextLink href={`${serviceLinks.auth.login}`}>
           <Button
