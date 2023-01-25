@@ -25,7 +25,7 @@ export const AuthLayout = ({
   enableRecaptcha = true,
   ...props
 }: AuthLayoutProps) => {
-  const width = useWidth();
+  const width = useWidth(2000);
   const theme = useTheme();
 
   return (
@@ -54,13 +54,10 @@ export const AuthLayout = ({
             shape="rounded"
             width={{ xs: "100%", sm: "380px" }}
             style={{
-              position: width < 650.9 ? "absolute" : "unset",
-              bottom: 0,
-              left: 0,
-              borderBottomLeftRadius: width < 650.9 && 0,
-              borderBottomRightRadius: width < 650.9 && 0,
+              overflowY: "auto",
             }}
             p={0}
+            m={1}
           >
             <Box
               display="flex"
@@ -68,10 +65,11 @@ export const AuthLayout = ({
               fullWidth
               direction="column"
               align="center"
-              justify="center"
+              justify="start"
               backgroundColor="transparent"
               style={{ position: "relative", overflow: "auto" }}
               maxHeight="100vh"
+              wrap="nowrap"
               p={0}
             >
               {children}
