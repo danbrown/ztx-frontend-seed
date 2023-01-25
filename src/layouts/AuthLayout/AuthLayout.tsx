@@ -51,7 +51,6 @@ export const AuthLayout = ({
         >
           <Box
             backgroundColor="background"
-            shape="rounded"
             width={{ xs: "100%", sm: "380px" }}
             style={{
               overflowY: "auto",

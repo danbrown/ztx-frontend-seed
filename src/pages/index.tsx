@@ -153,14 +153,14 @@ export default function Home(props) {
         </Grid>
       </ZetaContainer>
 
-      <code>
+      {/* <code>
         <pre>
           POSTS
           <br />
           {JSON.stringify(posts, null, 2)}
           <br />
         </pre>
-      </code>
+      </code> */}
     </DefaultLayout>
   );
 }

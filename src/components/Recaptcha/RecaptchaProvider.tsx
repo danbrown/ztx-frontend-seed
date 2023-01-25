@@ -4,6 +4,7 @@ import {
   useGoogleReCaptcha,
 } from "react-google-recaptcha-v3";
 import axios from "axios";
+import { useWindow } from "@hooks/useWindow";
 
 export const RecaptchaContext = createContext(null);
 
@@ -26,6 +27,7 @@ export const RecaptchaProvider = ({ enabled, children }) => {
 
 const RecaptchaSubProvider = ({ children }) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
+  const window = useWindow();
   const [recaptchaLoading, setRecaptchaLoading] = useState(false);
 
   const handleRecaptcha = async (

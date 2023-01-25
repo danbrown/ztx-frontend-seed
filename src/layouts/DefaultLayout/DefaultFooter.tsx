@@ -1,3 +1,4 @@
+import { SITE_TITLE } from "@config/index";
 import { Flex, Typography, Container } from "@wipsie/ui";
 
 export const DefaultFooter = () => {
@@ -12,7 +13,7 @@ export const DefaultFooter = () => {
         fullWidth
       >
         <Typography variant="body1">
-          © {new Date().getFullYear()} Company - All Rights Reserved.
+          © {new Date().getFullYear()} {SITE_TITLE} - All Rights Reserved.
         </Typography>
       </Container>
     </Flex>

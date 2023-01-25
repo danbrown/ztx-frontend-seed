@@ -30,6 +30,12 @@ import {
   initialState as initialState_Settings,
   createSlice as createSlice_Settings,
 } from "./slices/settings.slice";
+import {
+  sliceName as sliceName_Auth,
+  SliceType as SliceType_Auth,
+  initialState as initialState_Auth,
+  createSlice as createSlice_Auth,
+} from "./slices/auth.slice";
 
 // & Scoped Types - Joint all slices into one type, scoped
 type ZustandStoreJoints = {
@@ -37,6 +43,7 @@ type ZustandStoreJoints = {
   [sliceName_Fishes]: sliceType_Fishes;
   [sliceName_Posts]: SliceType_Posts;
   [sliceName_Settings]: SliceType_Settings;
+  [sliceName_Auth]: SliceType_Auth;
 };
 
 // Merge all slices into one intersection type
@@ -52,6 +59,7 @@ const initialState: ZustandStoreInitialState = {
   ...initialState_Fishes,
   ...initialState_Posts,
   ...initialState_Settings,
+  ...initialState_Auth,
 };
 
 // Store
@@ -65,6 +73,7 @@ const useStore = create<ZustandStoreState>()(
         ...createSlice_Fishes(...a),
         ...createSlice_Posts(...a),
         ...createSlice_Settings(...a),
+        ...createSlice_Auth(...a),
       }),
 
       { name: "bound-store" }
