@@ -7,7 +7,7 @@ import { AuthUserProfile } from "@components/Auth/AuthUserProfile";
 
 export default function LoginPage(props) {
   const theme = useTheme();
-  const { session, user, authenticated } = useZustandStore("auth");
+  const { authenticated } = useZustandStore("auth");
 
   return (
     <AuthLayout

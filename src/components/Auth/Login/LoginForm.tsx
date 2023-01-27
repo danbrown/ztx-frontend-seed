@@ -23,11 +23,13 @@ export const LoginForm = () => {
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
+  // fields
+  const [identifier, setIdentifier] = useState("");
+  const [password, setPassword] = useState("");
+  // end fields
+
   const handleLogin = () => {
-    dispatchLogin({
-      identifier: "danbrown",
-      password: "password",
-    }).then((response) => {
+    dispatchLogin({ identifier, password }).then((response) => {
       console.log(response);
 
       // if 'to' param exists, redirect to it, otherwise redirect to main page
@@ -47,6 +49,8 @@ export const LoginForm = () => {
             fullWidth
             startAdornment={<User01Icon />}
             placeholder="Username or Email"
+            value={identifier}
+            onChange={(e: any) => setIdentifier(e.target.value)}
           />
         </Grid>
         <Grid item xs={12}>
@@ -55,6 +59,8 @@ export const LoginForm = () => {
             type={isPasswordVisible ? "text" : "password"}
             startAdornment={<Lock01Icon />}
             placeholder="Password"
+            value={password}
+            onChange={(e: any) => setPassword(e.target.value)}
             endAdornment={
               <IconButton
                 backgroundColor="neutral"

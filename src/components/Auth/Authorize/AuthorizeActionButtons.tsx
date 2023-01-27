@@ -1,11 +1,10 @@
 import { Button, Flex, Grid } from "@wipsie/ui";
+import { useZustandStore } from "@zustand/ZustandStoreProvider";
 
-export const AuthorizeActionButtons = ({
-  authenticated,
-  loggedSession,
-  appData,
-}) => {
-  if (!authenticated || !loggedSession?.user) return null;
+export const AuthorizeActionButtons = ({ appData }) => {
+  const { authenticated, account } = useZustandStore("auth");
+
+  if (!authenticated || !account) return null;
 
   return (
     <Flex fullWidth p={2} pt={4}>

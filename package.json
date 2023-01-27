@@ -17,7 +17,9 @@
     "@wipsie/ui": "^1.0.236",
     "axios": "^1.2.2",
     "classnames": "^2.3.1",
+    "cors": "^2.8.5",
     "next": "^13.1.2",
+    "next-connect": "^0.13.0",
     "next-pwa": "^5.6.0",
     "nookies": "^2.5.2",
     "nprogress": "^0.2.0",
@@ -29,6 +31,7 @@
     "zustand": "^4.3.2"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.13",
     "@types/node": "^18.11.18",
     "@types/nookies": "^2.0.3",
     "@types/nprogress": "^0.2.0",

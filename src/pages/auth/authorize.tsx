@@ -33,39 +33,19 @@ export default function AuthorizePage(props) {
       <AuthorizeAvatarsBox appData={appData} />
 
       {/* Source oriented text */}
-      <AuthorizeContextText
-        appData={appData}
-        authenticated={authenticated}
-        loggedSession={session}
-      />
+      <AuthorizeContextText appData={appData} />
 
       {/* Signed in */}
-      <AuthorizeUserSignedIn
-        appData={appData}
-        authenticated={authenticated}
-        loggedSession={session}
-      />
+      <AuthorizeUserSignedIn appData={appData} />
 
       {/* Scopes box */}
-      <AuthorizeScopesBox
-        appData={appData}
-        authenticated={authenticated}
-        loggedSession={session}
-      />
+      <AuthorizeScopesBox appData={appData} />
 
       {/* App Information Box */}
-      <AuthorizeAppInfoBox
-        appData={appData}
-        authenticated={authenticated}
-        loggedSession={session}
-      />
+      <AuthorizeAppInfoBox appData={appData} />
 
       {/* Action Buttons */}
-      <AuthorizeActionButtons
-        appData={appData}
-        authenticated={authenticated}
-        loggedSession={session}
-      />
+      <AuthorizeActionButtons appData={appData} />
 
       {/* Not signed in - Login Form */}
       {(!authenticated || !session) && <LoginForm />}

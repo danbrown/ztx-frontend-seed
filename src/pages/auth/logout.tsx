@@ -10,10 +10,10 @@ export default function LogoutPage(props) {
   const theme = useTheme();
   const router = useRouter();
 
-  const { session, user, dispatchLogout } = useZustandStore("auth");
+  const { session, account, dispatchLogout } = useZustandStore("auth");
 
   useEffect(() => {
-    if (session || user) {
+    if (session || account) {
       dispatchLogout({
         sessionToken: session?.token,
         accessToken: session?.accessToken,

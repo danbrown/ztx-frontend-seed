@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
-import { UnionToIntersection } from "@customTypes/UnionToIntersection.type";
 import { create } from "zustand";
+import { useEffect, useState } from "react";
 import { devtools, persist } from "zustand/middleware";
 import useSwr, { SWRResponse } from "swr";
+import nookies from "nookies";
+import { UnionToIntersection } from "@customTypes/UnionToIntersection.type";
 import { OmittedFunctionKeys } from "@customTypes/OmittedFunctionKeys.type";
 
 // Slices
@@ -63,7 +64,7 @@ const initialState: ZustandStoreInitialState = {
 };
 
 // Store
-const useStore = create<ZustandStoreState>()(
+export const zustandStore = create<ZustandStoreState>()(
   devtools(
     persist(
       (...a) => ({
@@ -76,14 +77,16 @@ const useStore = create<ZustandStoreState>()(
         ...createSlice_Auth(...a),
       }),
 
-      { name: "bound-store" }
+      {
+        name: "zustand-store",
+      }
     )
   )
 );
 
 const useHydratedStore = (): ZustandStoreState => {
   const [state, setState] = useState(initialState);
-  const zustandState = useStore((state) => state);
+  const zustandState = zustandStore((state) => state);
 
   useEffect(() => {
     setState(zustandState);

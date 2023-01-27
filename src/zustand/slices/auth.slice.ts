@@ -1,4 +1,5 @@
 import { OmittedFunctionKeys } from "@customTypes/OmittedFunctionKeys.type";
+import apiWorker, { selfApiWorker } from "@utils/apiWorker";
 import { ZustandStoreState } from "@zustand/ZustandStoreProvider";
 import { StateCreator } from "zustand";
 
@@ -7,20 +8,20 @@ export const sliceName = "auth";
 
 export const initialState: OmittedFunctionKeys<SliceType> = {
   authenticated: false,
-  user: null,
+  account: null,
   session: null,
 };
 
 export interface SliceType {
   authenticated: boolean;
-  user: iUser | null;
+  account: iAccount | null;
   session: ISession | null;
 
   // Login
-  dispatchLogin: (params: ILoginParameters) => Promise<ISession | IError>;
+  dispatchLogin: (params: ILoginParameters) => Promise<ISession & IError>;
 
   // Logout
-  dispatchLogout: (params: ILogoutParameters | undefined) => Promise<void>;
+  dispatchLogout: (params?: ILogoutParameters) => Promise<void>;
 
   // Register
   dispatchRegister: (
@@ -34,30 +35,56 @@ export interface SliceType {
   dispatchPasswordTokenValidate: (token: string) => Promise<void>;
 
   // dispatchSessionInit: (session: any) => void;
-  // dispatchSessionRefresh: (session: any) => void;
-  // dispatchAuthorize: (user: any) => void;
+  dispatchSessionRefresh: () => Promise<ISession & IError>;
+  // dispatchAuthorize: (account: any) => void;
 }
 
 // Interfaces
-export interface iUser {
+export interface iAccount {
   id: string;
   email: string;
   name: string;
   username: string;
-  avatar: string;
+  permission: string;
+
+  isActive: boolean;
+  isVerified: boolean;
+  isBanned: boolean;
+  isPublic: boolean;
+  isEmailConfirmed: boolean;
+  isDeleted: boolean;
+  isAdminDeleted: boolean;
+
+  profile: {
+    avatar: string;
+    bio: string;
+    cover: string;
+  };
 }
 
 export interface ISession {
   id: string;
-  user?: iUser;
-  expiresAt: string;
+  accountId: string;
+
   token: string;
-  refreshToken: string;
   accessToken: string;
+  refreshToken: string;
+
+  device: string;
+  os: string;
+  browser: string;
+  browserVersion: string;
+
+  createdAt: string;
+  expiresAt: string;
+
+  account?: iAccount;
 }
 
 export interface IError {
-  message: string;
+  error?: {
+    message: string;
+  };
 }
 
 export interface ILoginParameters {
@@ -84,32 +111,34 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   get
 ) => ({
   authenticated: false,
-  user: null,
+  account: null,
   session: null,
 
-  // + Handle user login
+  // + Handle account login
   dispatchLogin: async ({ identifier, password }) => {
-    return new Promise((resolve, reject) => {
-      const newSession: ISession = {
-        id: "1",
-        expiresAt: "2021-08-01T00:00:00.000Z",
-        accessToken: "bababoueye",
-        refreshToken: "bababoueye",
-        token: "bababoueye",
+    return new Promise(async (resolve, reject) => {
+      // login the account
+      const loginRequest = await apiWorker.post(`/auth/login`, {
+        identifier,
+        password,
+      });
 
-        user: {
-          id: "1",
-          name: "Daniel Brown",
-          username: "danbrown",
-          email: "danbrown@example.com",
-          avatar:
-            "https://files.library.wipsie.com/user_avatars/abd9a22c-f9f8-41fd-8c46-3db804791477_danbrown.jpg",
-        },
-      };
+      // login failed
+      if (loginRequest.data?.error) {
+        return reject(loginRequest.data);
+      }
 
+      const newSession = loginRequest.data;
+
+      // set the session cookie
+      await selfApiWorker.post(`/api/auth`, {
+        session: newSession,
+      });
+
+      // set the session in the store
       set((state) => ({
         authenticated: true,
-        user: newSession.user,
+        account: newSession.account,
         session: newSession,
       }));
 
@@ -119,12 +148,30 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
 
   // + Handle user logout
   dispatchLogout: async ({ sessionToken = null, accessToken = null }) => {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       const currentSession = get().session;
 
+      // delete session from the server
+      try {
+        if (sessionToken) {
+          await apiWorker.delete(`/auth/sessions/${sessionToken}`);
+        } else if (currentSession) {
+          await apiWorker.delete(
+            `/auth/sessions/accessToken/${currentSession?.token}`
+          );
+        }
+      } catch (e) {
+        console.log(e);
+        console.log("Unable to delete session from the server");
+      }
+
+      // remove session cookie
+      await selfApiWorker.post(`/api/auth/logout`);
+
+      // remove session from the store
       set((state) => ({
         authenticated: false,
-        user: null,
+        account: null,
         session: null,
       }));
 
@@ -133,8 +180,31 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   },
 
   // + Handle user registration
-  dispatchRegister: async ({ username }) => {
-    return new Promise((resolve, reject) => {
+  dispatchRegister: async ({
+    confirmPassword,
+    email,
+    name,
+    password,
+    username,
+  }) => {
+    return new Promise(async (resolve, reject) => {
+      // check if passwords match
+      if (password !== confirmPassword) {
+        return reject({ error: { message: "Passwords do not match" } });
+      }
+
+      // register the account
+      const result = await apiWorker.post(`/auth/register`, {
+        username,
+        name,
+        email,
+        password,
+      });
+
+      if (result.data?.error) {
+        return reject(result.data);
+      }
+
       resolve({ message: "Registration successful" });
     });
   },
@@ -150,6 +220,35 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   dispatchPasswordTokenValidate: async (token) => {
     return new Promise((resolve, reject) => {
       resolve();
+    });
+  },
+
+  // + Handle session refresh
+  dispatchSessionRefresh: async () => {
+    return new Promise(async (resolve, reject) => {
+      // get the current session from cookie
+      const currentSessionRequest = await selfApiWorker.post(
+        `/api/auth/session`
+      );
+      const currentSession = currentSessionRequest.data;
+
+      // TODO: implement session refresh logic here
+      const newSession: ISession = currentSession;
+      // ----
+
+      // set the session cookie
+      await selfApiWorker.post(`/api/auth`, {
+        session: newSession,
+      });
+
+      // set the session in the store
+      set((state) => ({
+        authenticated: true,
+        account: newSession.account,
+        session: newSession,
+      }));
+
+      resolve(newSession);
     });
   },
 });

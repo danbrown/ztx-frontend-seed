@@ -7,12 +7,12 @@ import { SWR_POSTS_KEY } from "@zustand/slices/posts.slice";
 export default function Home(props) {
   const theme = useTheme();
 
-  const { user } = useZustandStore("auth");
+  const { account, session } = useZustandStore("auth");
 
   return (
     <DefaultLayout>
       <code>
-        <pre>{JSON.stringify({ user }, null, 2)}</pre>
+        <pre>{JSON.stringify({ account, session }, null, 2)}</pre>
       </code>
     </DefaultLayout>
   );

@@ -6,15 +6,13 @@ import {
   useTheme,
 } from "@wipsie/ui";
 import { CheckCircleIcon } from "@wipsie/icons";
+import { useZustandStore } from "@zustand/ZustandStoreProvider";
 
-export const AuthorizeScopesBox = ({
-  authenticated,
-  loggedSession,
-  appData,
-}) => {
+export const AuthorizeScopesBox = ({ appData }) => {
   const theme = useTheme();
+  const { authenticated, account } = useZustandStore("auth");
 
-  if (!authenticated || !loggedSession?.user) return null;
+  if (!authenticated || !account) return null;
 
   return (
     <>

@@ -22,6 +22,7 @@ import { ZetaInput } from "@components/ZetaComponents/ZetaInput";
 import { ZetaHeader2 } from "@components/ZetaComponents/ZetaHeader2";
 import { ZetaButton } from "@components/ZetaComponents/ZetaButton";
 import { ZetaMaterials } from "@components/ZetaComponents/ZetaMaterials";
+import apiWorker, { selfApiWorker } from "@utils/apiWorker";
 
 export default function Home(props) {
   const theme = useTheme();
@@ -152,6 +153,20 @@ export default function Home(props) {
           </Grid>
         </Grid>
       </ZetaContainer>
+
+      {/* test session call */}
+      <ZetaButton
+        backgroundColor="primary"
+        shape="square"
+        fullWidth
+        onClick={async () => {
+          // const res = await selfApiWorker.post("/api/auth/session");
+          const res = await apiWorker.get("/auth/status");
+          console.log(res.data);
+        }}
+      >
+        test session call
+      </ZetaButton>
 
       {/* <code>
         <pre>

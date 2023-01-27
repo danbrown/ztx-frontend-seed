@@ -1,12 +1,11 @@
 import { Flex, responsive, Spacing, Typography } from "@wipsie/ui";
 import { ClockCheckIcon, Link01Icon, User01Icon } from "@wipsie/icons";
+import { useZustandStore } from "@zustand/ZustandStoreProvider";
 
-export const AuthorizeAppInfoBox = ({
-  authenticated,
-  loggedSession,
-  appData,
-}) => {
-  if (!authenticated || !loggedSession?.user) return null;
+export const AuthorizeAppInfoBox = ({ appData }) => {
+  const { authenticated, account } = useZustandStore("auth");
+
+  if (!authenticated || !account) return null;
 
   return (
     <>

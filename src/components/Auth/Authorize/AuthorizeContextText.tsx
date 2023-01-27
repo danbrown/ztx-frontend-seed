@@ -1,10 +1,9 @@
 import { Typography } from "@wipsie/ui";
+import { useZustandStore } from "@zustand/ZustandStoreProvider";
 
-export const AuthorizeContextText = ({
-  authenticated,
-  loggedSession,
-  appData,
-}) => {
+export const AuthorizeContextText = ({ appData }) => {
+  const { authenticated, account } = useZustandStore("auth");
+
   return (
     <>
       {
@@ -16,7 +15,7 @@ export const AuthorizeContextText = ({
               align="center"
               color="subtext"
             >
-              {authenticated && loggedSession?.user ? (
+              {authenticated && account ? (
                 <>
                   A third party app
                   <br />

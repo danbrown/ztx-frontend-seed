@@ -7,18 +7,18 @@ import { useZustandStore } from "@zustand/ZustandStoreProvider";
 export const Config = () => {
   const width = useWidth();
 
-  const { authenticated, user } = useZustandStore("auth");
+  const { authenticated, account } = useZustandStore("auth");
 
   return (
     <>
-      {authenticated && user ? (
+      {authenticated && account ? (
         <NextLink href={`${serviceLinks.accountDashboard}`}>
           <IconButton size="small" shape="round">
             <Avatar
               xs="small"
-              src={user?.avatar}
-              alt={user?.name}
-              title={user?.name}
+              src={account?.avatar}
+              alt={account?.name}
+              title={account?.name}
               backgroundColor="basic"
             />
           </IconButton>

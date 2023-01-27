@@ -3,15 +3,13 @@ import { NextLink } from "@components/NextLink";
 import { serviceLinks } from "@config/links";
 import { useRouter } from "next/router";
 import { useWindow } from "@hooks/useWindow";
+import { useZustandStore } from "@zustand/ZustandStoreProvider";
 
-export const AuthorizeUserSignedIn = ({
-  authenticated,
-  loggedSession,
-  appData,
-}) => {
+export const AuthorizeUserSignedIn = ({ appData }) => {
   const window = useWindow();
+  const { authenticated, account } = useZustandStore("auth");
 
-  if (!authenticated || !loggedSession?.user) return null;
+  if (!authenticated || !account) return null;
 
   return (
     <>
@@ -35,7 +33,7 @@ export const AuthorizeUserSignedIn = ({
               lineHeight: 1.7,
             }}
           >
-            @{loggedSession?.user?.username}
+            @{account?.username}
           </Typography>
         </NextLink>
         <br />

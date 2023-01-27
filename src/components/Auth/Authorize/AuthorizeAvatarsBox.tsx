@@ -3,11 +3,11 @@ import { useZustandStore } from "@zustand/ZustandStoreProvider";
 
 export const AuthorizeAvatarsBox = ({ appData }) => {
   const theme = useTheme();
-  const { authenticated, user } = useZustandStore("auth");
+  const { authenticated, account } = useZustandStore("auth");
 
   return (
     <>
-      {authenticated && user ? (
+      {authenticated && account ? (
         <Flex align="center" justify="center" direction="row" p={3} pb={"0px"}>
           <Avatar
             src={appData?.logo}
@@ -23,9 +23,9 @@ export const AuthorizeAvatarsBox = ({ appData }) => {
           </Typography>
 
           <Avatar
-            src={user?.avatar}
-            alt={user?.name}
-            title={user?.name}
+            src={account?.profile?.avatar}
+            alt={account?.name}
+            title={account?.name}
             backgroundColor="basic"
             xs="large"
             style={{ marginLeft: theme.layout.spacingUnit }}

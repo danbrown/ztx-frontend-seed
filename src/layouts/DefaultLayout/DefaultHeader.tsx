@@ -14,9 +14,6 @@ import {
 } from "@wipsie/ui";
 import { MenuOutlined, CloseOutlined } from "@ant-design/icons";
 import ThemeSwitch from "@layouts/common/ThemeSwitch";
-import { useZustandStore } from "@zustand/ZustandStoreProvider";
-import { serviceLinks } from "@config/links";
-import { NextLink } from "@components/NextLink";
 import { ZetahexAppLogo } from "@components/ZetahexAppLogo";
 import { Config } from "@layouts/common/Config";
 import { useScrollBlock } from "@hooks/useScrollBlock";
