@@ -87,7 +87,6 @@ export const LoginForm = () => {
                 placeholder="Username or Email"
                 tabIndex={1}
                 name="identifier"
-                size="large"
                 onChange={handleChange}
                 onBlur={handleBlur}
                 value={values.identifier}
@@ -105,7 +104,6 @@ export const LoginForm = () => {
                   ref: passwordRef,
                 }}
                 name="password"
-                size="large"
                 type={isPasswordVisible ? "text" : "password"}
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -144,7 +142,6 @@ export const LoginForm = () => {
                 tabIndex={3}
                 type="submit"
                 backgroundColor="primary"
-                size="large"
                 disabled={isSubmitting || !isValid || recaptchaLoading}
                 startIcon={
                   isSubmitting || recaptchaLoading ? (

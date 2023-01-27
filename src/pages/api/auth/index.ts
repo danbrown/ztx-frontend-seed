@@ -26,23 +26,6 @@ export default nextConnect().post(
         };`
       );
 
-      // nookies.set(
-      //   { res },
-      //   process.env.NEXT_PUBLIC_COOKIE_DOMAIN_NAME,
-      //   JSON.stringify(session),
-      //   {
-      //     // maxAge: diff, // 7 days by default
-      //     path: "/",
-      //     httpOnly: true,
-      //     hostOnly: false,
-      //     // sameSite: "strict",
-      //     domain:
-      //       process.env.NODE_ENV === "production"
-      //         ? process.env.NEXT_PUBLIC_COOKIE_DOMAIN
-      //         : "localhost",
-      //   }
-      // );
-
       res.status(200).send("ok");
     } catch (e) {
       console.log(e);

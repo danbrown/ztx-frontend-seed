@@ -2,7 +2,6 @@ import { create } from "zustand";
 import { useEffect, useState } from "react";
 import { devtools, persist } from "zustand/middleware";
 import useSwr, { SWRResponse } from "swr";
-import nookies from "nookies";
 import { UnionToIntersection } from "@customTypes/UnionToIntersection.type";
 import { OmittedFunctionKeys } from "@customTypes/OmittedFunctionKeys.type";
 
