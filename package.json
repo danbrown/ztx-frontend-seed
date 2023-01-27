@@ -18,6 +18,7 @@
     "axios": "^1.2.2",
     "classnames": "^2.3.1",
     "cors": "^2.8.5",
+    "formik": "^2.2.9",
     "next": "^13.1.2",
     "next-connect": "^0.13.0",
     "next-pwa": "^5.6.0",
@@ -28,6 +29,7 @@
     "react-feather": "^2.0.10",
     "react-google-recaptcha-v3": "^1.10.1",
     "swr": "^2.0.0",
+    "yup": "^0.32.11",
     "zustand": "^4.3.2"
   },
   "devDependencies": {
