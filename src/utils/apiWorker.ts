@@ -78,11 +78,15 @@ apiWorker.interceptors.request.use(
 
           const refreshedSession = await dispatchSessionRefresh();
 
-          // if there is an error, log out
+          // if there is an error, log out and return the config
           if (refreshedSession?.error) {
             console.log("Session refresh failed, logging out...");
 
             dispatchLogout({ sessionToken });
+
+            return Promise.reject({
+              error: "Session refresh failed, user logged out",
+            });
           }
 
           // update the token in the header

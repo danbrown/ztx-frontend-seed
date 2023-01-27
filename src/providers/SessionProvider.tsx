@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import LoadingScreen from "@components/LoadingScreen";
 import { zustandStore } from "@zustand/ZustandStoreProvider";
 import { useWindow } from "@hooks/useWindow";
-import { serviceLinks } from "@config/links";
 
 // This provider will protect the pages from showing content before the zustand store is loaded
 // This is useful for pages that need to access the zustand store content, like session, account, etc.

@@ -1,6 +1,5 @@
 import { useTheme } from "@wipsie/ui";
 import { DefaultLayout } from "@layouts/DefaultLayout/DefaultLayout";
-import { NextLink } from "@components/NextLink";
 import { useZustandStore } from "@zustand/ZustandStoreProvider";
 import { useEffect, useState } from "react";
 import apiWorker from "@utils/apiWorker";
