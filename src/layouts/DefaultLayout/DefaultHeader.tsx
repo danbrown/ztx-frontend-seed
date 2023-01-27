@@ -62,7 +62,6 @@ export const DefaultHeader = () => {
         <Flex direction="row" align="center" justify="between">
           <ThemeSwitch />
           <Config />
-          <LogoutButton />
         </Flex>
       </Container>
     </Container>

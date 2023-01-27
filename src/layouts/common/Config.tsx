@@ -1,28 +1,58 @@
 import { NextLink } from "@components/NextLink";
 import { serviceLinks } from "@config/links";
 import { User01Icon } from "@wipsie/icons";
-import { Avatar, Button, IconButton, useWidth } from "@wipsie/ui";
+import {
+  Avatar,
+  Button,
+  Container,
+  IconButton,
+  Popover,
+  Spacing,
+  useWidth,
+} from "@wipsie/ui";
 import { useZustandStore } from "@zustand/ZustandStoreProvider";
+import { useState } from "react";
+import { LogoutButton } from "./LogoutButton";
 
 export const Config = () => {
   const width = useWidth();
 
   const { authenticated, account } = useZustandStore("auth");
 
+  const [isPopoverVisible, setIsPopoverVisible] = useState(false);
+
   return (
     <>
       {authenticated && account ? (
-        <NextLink href={`${serviceLinks.accountDashboard}`}>
-          <IconButton size="small" shape="round">
+        <Popover
+          visible={isPopoverVisible}
+          position="bottom right"
+          arrow
+          backgroundColor="highlight"
+          content={
+            <Container backgroundColor="highlight" p={1}>
+              <NextLink href={`${serviceLinks.accountDashboard}`}>
+                Dashboard
+              </NextLink>
+              <Spacing height={2} />
+              <LogoutButton />
+            </Container>
+          }
+        >
+          <IconButton
+            size="small"
+            shape="round"
+            onClick={() => setIsPopoverVisible(!isPopoverVisible)}
+          >
             <Avatar
               xs="small"
-              src={account?.avatar}
+              src={account?.profile?.avatar}
               alt={account?.name}
               title={account?.name}
               backgroundColor="basic"
             />
           </IconButton>
-        </NextLink>
+        </Popover>
       ) : (
         <NextLink href={`${serviceLinks.auth.login}`}>
           <Button

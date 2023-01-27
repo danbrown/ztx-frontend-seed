@@ -26,53 +26,90 @@ const apiWorker = axios.create({
 // + TOKEN REFRESH INTERCEPTOR
 apiWorker.interceptors.request.use(
   async (config) => {
-    // get the token from the store, and the refresh function
-    const currentSessionRequest = await selfApiWorker.post(`/api/auth/session`);
-    console.log(currentSessionRequest);
+    // get the token from the store, and the refresh and logout functions
+    const { dispatchSessionRefresh, dispatchLogout, session } =
+      zustandStore.getState();
 
-    const {
-      accessToken,
-      error,
-      token: sessionToken,
-    } = currentSessionRequest.data;
-    const { dispatchSessionRefresh, dispatchLogout } = zustandStore.getState();
+    // initialize the token variables
+    let accessToken = null,
+      error = null,
+      sessionToken = null;
 
-    if (!error) {
+    // & GET SESSION TOKENS (store or server cookies)
+    //  if the session is already in the store, use it
+    try {
+      if (session) {
+        accessToken = session.accessToken;
+        sessionToken = session.token;
+      }
+      // else if the session is not in the store, get it from the server cookie
+      else {
+        // get the token from the store, and the refresh function
+        const currentSessionRequest = await selfApiWorker.post(
+          `/api/auth/session`
+        );
+        console.log(currentSessionRequest);
+
+        if (currentSessionRequest.data) {
+          accessToken = currentSessionRequest.data.accessToken;
+          error = currentSessionRequest.data.error;
+          sessionToken = currentSessionRequest.data.token;
+        }
+      }
+    } catch (e) {
+      console.log(e);
+    }
+
+    // & TRY TO REFRESH THE TOKEN
+    // ignore the refresh call if it's a refresh call and there is no error
+    if (!error && config.url?.includes("/refresh") === false) {
       // decode the token looking for the expiration date
       const { exp: tokenExpDate } = decodeJwt(accessToken);
 
-      // get the current date
+      // consider the refresh token expired it's 5 minutes before the actual expiration date
+      const tokenExpDateWithRefresh = tokenExpDate - 300;
       const currentDate = new Date().getTime() / 1000;
 
       // if the token is expired, refresh it, refreshedSession will be already updated in the store, so we can get the new token from there
-      if (currentDate > tokenExpDate) {
-        console.log("Session expired, refreshing...");
+      if (currentDate > tokenExpDateWithRefresh) {
+        // & REFRESH THE TOKEN
+        try {
+          console.log("Session expired, refreshing...");
 
-        const refreshedSession = await dispatchSessionRefresh();
-        if (refreshedSession?.error) {
-          console.log("Session refresh failed, logging out...");
-          console.log(refreshedSession);
+          const refreshedSession = await dispatchSessionRefresh();
 
-          // dispatchLogout({ sessionToken });
+          // if there is an error, log out
+          if (refreshedSession?.error) {
+            console.log("Session refresh failed, logging out...");
 
-          return Promise.reject(refreshedSession);
+            dispatchLogout({ sessionToken });
+          }
+
+          // update the token in the header
+          (config.headers as AxiosHeaders).set(
+            "Authorization",
+            `Bearer ${refreshedSession.accessToken}`
+          );
+        } catch (e) {
+          console.log(e);
+          return Promise.reject({ error: "Session refresh failed" });
         }
-
-        // update the token in the header
-        (config.headers as AxiosHeaders).set(
-          "Authorization",
-          `Bearer ${refreshedSession.accessToken}`
-        );
-      } else {
-        // update the token in the header
+      }
+      // & TOKEN IS NOT EXPIRED, JUST USE THE CURRENT ONE
+      else {
+        // if the token is not expired, just add the current session token in the header
         (config.headers as AxiosHeaders).set(
           "Authorization",
           `Bearer ${accessToken}`
         );
       }
     } else {
+      // if there is an error, log out
       console.log(error);
     }
+
+    // & RETURN THE CONFIG
+    console.log(config);
     return config;
   },
   (error) => {

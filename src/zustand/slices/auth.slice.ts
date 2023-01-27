@@ -179,7 +179,7 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
     });
   },
 
-  // + Handle user registration
+  // TODO + Handle user registration
   dispatchRegister: async ({
     confirmPassword,
     email,
@@ -209,14 +209,14 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
     });
   },
 
-  // + Handle password reset
+  // TODO + Handle password reset
   dispatchPasswordReset: async (email) => {
     return new Promise((resolve, reject) => {
       resolve();
     });
   },
 
-  // + Handle password reset token validation
+  // TODO + Handle password reset token validation
   dispatchPasswordTokenValidate: async (token) => {
     return new Promise((resolve, reject) => {
       resolve();
@@ -231,24 +231,45 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         `/api/auth/session`
       );
       const currentSession = currentSessionRequest.data;
+      console.log("currentSession", currentSession);
 
-      // TODO: implement session refresh logic here
-      const newSession: ISession = currentSession;
-      // ----
+      // refresh the session
+      try {
+        const refreshedSessionRequest = await apiWorker.post(
+          `/auth/sessions/refresh`,
+          {
+            token: currentSession.token,
+            refreshToken: currentSession.refreshToken,
+          }
+        );
 
-      // set the session cookie
-      await selfApiWorker.post(`/api/auth`, {
-        session: newSession,
-      });
+        const refreshedSession = refreshedSessionRequest.data;
+        console.log("refreshedSession2", refreshedSession);
 
-      // set the session in the store
-      set((state) => ({
-        authenticated: true,
-        account: newSession.account,
-        session: newSession,
-      }));
+        if (refreshedSession.error) {
+          console.log("Unable to refresh session");
+          console.log(refreshedSession.error);
+          return reject(refreshedSession);
+        }
 
-      resolve(newSession);
+        // set the session cookie
+        await selfApiWorker.post(`/api/auth`, {
+          session: refreshedSession,
+        });
+
+        // set the session in the store
+        set((state) => ({
+          authenticated: true,
+          account: refreshedSession.account,
+          session: refreshedSession,
+        }));
+
+        resolve(refreshedSession);
+      } catch (e) {
+        console.log("Unable to refresh session");
+        console.log(e);
+        return reject({ error: { message: "Unable to refresh session" } });
+      }
     });
   },
 });

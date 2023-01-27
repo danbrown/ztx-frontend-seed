@@ -2,6 +2,7 @@ import { ThemeProvider } from "./ThemeProvider";
 import { LoadingProvider } from "./LoadingProvider";
 import { SWRConfig } from "swr";
 import axios from "axios";
+import SessionProvider from "./SessionProvider";
 
 export const Providers = ({ children }) => {
   return (
@@ -12,7 +13,9 @@ export const Providers = ({ children }) => {
       }}
     >
       <ThemeProvider>
-        <LoadingProvider>{children}</LoadingProvider>
+        <LoadingProvider>
+          <SessionProvider>{children}</SessionProvider>
+        </LoadingProvider>
       </ThemeProvider>
     </SWRConfig>
   );

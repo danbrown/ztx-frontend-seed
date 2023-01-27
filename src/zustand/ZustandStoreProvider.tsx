@@ -46,15 +46,23 @@ type ZustandStoreJoints = {
   [sliceName_Auth]: SliceType_Auth;
 };
 
+// Here we add the loading property to each slice, loading is universal to the slices
+type ZustandStoreSlicesJoints = {
+  [key in keyof ZustandStoreJoints]: ZustandStoreJoints[key extends keyof ZustandStoreJoints
+    ? key
+    : never] & { loading: boolean };
+};
+
 // Merge all slices into one intersection type
 export type ZustandStoreState = UnionToIntersection<
-  ZustandStoreJoints[keyof ZustandStoreJoints] // merge slices
+  ZustandStoreSlicesJoints[keyof ZustandStoreSlicesJoints] // merge slices
 >;
 
 type ZustandStoreInitialState = OmittedFunctionKeys<ZustandStoreState>;
 
 // & Initial State
 const initialState: ZustandStoreInitialState = {
+  loading: null,
   ...initialState_Bears,
   ...initialState_Fishes,
   ...initialState_Posts,
@@ -95,12 +103,12 @@ const useHydratedStore = (): ZustandStoreState => {
 };
 
 // Store with filters by keys
-export const useZustandStore = <T extends keyof ZustandStoreJoints>(
+export const useZustandStore = <T extends keyof ZustandStoreSlicesJoints>(
   key: T
-): ZustandStoreJoints[T] => {
+): ZustandStoreSlicesJoints[T] => {
   const states = useHydratedStore();
   // console.log("states", key);
-  return states as Pick<ZustandStoreJoints, T>[typeof key]; // filter by key
+  return states as Pick<ZustandStoreSlicesJoints, T>[typeof key]; // filter by key
 };
 
 // Store with SWR
@@ -119,14 +127,14 @@ type ZustandSwrOptions = {
   setFunction?: string;
 };
 
-export const useZustandSwr = <T extends keyof ZustandStoreJoints>(
+export const useZustandSwr = <T extends keyof ZustandStoreSlicesJoints>(
   key: T,
   swrKey: string,
   zustandSwrOptions: ZustandSwrOptions = {
     autoStateMutate: true,
     setFunction: null,
   }
-): ZustandStoreJoints[T] & ZustandSwrProps => {
+): ZustandStoreSlicesJoints[T] & ZustandSwrProps => {
   let { autoStateMutate, setFunction } = zustandSwrOptions;
 
   // if key is "fishes", setFunction will be "setFishes"
@@ -148,7 +156,7 @@ export const useZustandSwr = <T extends keyof ZustandStoreJoints>(
   }, [data]);
 
   return {
-    ...(states as Pick<ZustandStoreJoints, T>[T]), // filter by key
+    ...(states as Pick<ZustandStoreSlicesJoints, T>[T]), // filter by key
 
     swr: {
       data,
