@@ -25,10 +25,15 @@ export const Config = () => {
     <>
       {authenticated && account ? (
         <Popover
+          arrow
           visible={isPopoverVisible}
           position="bottom right"
-          arrow
           backgroundColor="highlight"
+          backdrop
+          onBackdropClick={() => setIsPopoverVisible(false)}
+          backdropProps={{
+            noPortal: true,
+          }}
           content={
             <Container backgroundColor="highlight" p={1}>
               <NextLink href={`${serviceLinks.accountDashboard}`}>

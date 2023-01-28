@@ -130,9 +130,9 @@ const darkCustomTheme: WipsieThemes = {
   palette: {
     ...darkTheme.palette,
 
-    shade: "#1a1a1a",
-    background: "#292929",
-    highlight: "#3C3C3C",
+    shade: "#151515",
+    background: "#1f1f1f",
+    highlight: "#313131",
 
     subtext: "#AAAAAA",
     text: "#ECE8E1",
