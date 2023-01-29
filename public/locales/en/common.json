@@ -1,0 +1,5 @@
+{
+  "META_TITLE": "Next.js Localization with Next-Translate",
+  "TITLE": "Welcome to my i18n NextJS application!",
+  "DESCRIPTION": "I'm using the Next-Translate library to translate this page."
+}

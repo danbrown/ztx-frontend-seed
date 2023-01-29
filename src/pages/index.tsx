@@ -1,17 +1,4 @@
-import {
-  Button,
-  ButtonProps,
-  Container,
-  ContainerProps,
-  Divider,
-  Flex,
-  Grid,
-  Input,
-  InputProps,
-  Spacing,
-  Typography,
-  useTheme,
-} from "@wipsie/ui";
+import { Divider, Grid, Spacing, Typography, useTheme } from "@wipsie/ui";
 import { DefaultLayout } from "@layouts/DefaultLayout/DefaultLayout";
 import { NextLink } from "@components/NextLink";
 import { useZustandStore, useZustandSwr } from "@zustand/ZustandStoreProvider";
@@ -22,7 +9,9 @@ import { ZetaInput } from "@components/ZetaComponents/ZetaInput";
 import { ZetaHeader2 } from "@components/ZetaComponents/ZetaHeader2";
 import { ZetaButton } from "@components/ZetaComponents/ZetaButton";
 import { ZetaMaterials } from "@components/ZetaComponents/ZetaMaterials";
-import apiWorker, { selfApiWorker } from "@utils/apiWorker";
+import apiWorker from "@utils/apiWorker";
+import { useTranslation } from "react-i18next";
+import { useTranslate } from "@hooks/useTranslation";
 
 export default function Home(props) {
   const theme = useTheme();
@@ -30,9 +19,28 @@ export default function Home(props) {
   const { addFish, fishes } = useZustandStore("fishes");
   const { posts } = useZustandSwr("posts", SWR_POSTS_KEY);
 
+  const { translate, languages, language, changeLanguage } = useTranslate();
+
   return (
     <DefaultLayout>
       <ZetaMaterials />
+
+      <Typography variant="h1" color="neutral">
+        {translate("TITLE")}
+      </Typography>
+
+      <ZetaButton
+        onClick={() => {
+          const languageIndex = languages.indexOf(language);
+          const nextLanguageIndex =
+            languages.length - 1 === languageIndex ? 0 : languageIndex + 1;
+          const nextLanguage = languages[nextLanguageIndex];
+
+          changeLanguage(nextLanguage);
+        }}
+      >
+        {language}
+      </ZetaButton>
 
       <NextLink href="/dois">Page Dois</NextLink>
 
