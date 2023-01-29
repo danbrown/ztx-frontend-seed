@@ -92,7 +92,10 @@ export const zustandStore = create<ZustandStoreState>()(
 );
 
 const useHydratedStore = (): ZustandStoreState => {
-  const [state, setState] = useState(initialState);
+  const [state, setState] = useState({
+    ...initialState,
+    ...zustandStore.getState(),
+  });
   const zustandState = zustandStore((state) => state);
 
   useEffect(() => {

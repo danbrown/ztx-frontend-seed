@@ -16,7 +16,6 @@ export default function LogoutPage(props) {
     if (session || account) {
       dispatchLogout({
         sessionToken: session?.token,
-        accessToken: session?.accessToken,
       })
         // user will be logged out in any way, fail or success we can proceed
         .finally(() => {

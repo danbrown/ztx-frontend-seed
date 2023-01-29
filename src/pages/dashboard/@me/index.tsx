@@ -1,4 +1,4 @@
-import { useTheme } from "@wipsie/ui";
+import { Button, useTheme } from "@wipsie/ui";
 import { useZustandStore } from "@zustand/ZustandStoreProvider";
 import { useEffect, useState } from "react";
 import apiWorker from "@utils/apiWorker";
@@ -7,13 +7,14 @@ import { DashboardLayout } from "@layouts/DashboardLayout/DashboardLayout";
 export default function Home(props) {
   const theme = useTheme();
 
-  const { account, session, loading } = useZustandStore("auth");
+  const { account, session, dispatchSessionRemoveAll, dispatchSessionGetAll } =
+    useZustandStore("auth");
 
   const [sessions, setSessions] = useState([]);
 
   useEffect(() => {
-    apiWorker.get("/auth/sessions").then((response) => {
-      setSessions(response.data);
+    dispatchSessionGetAll().then((response) => {
+      setSessions(response);
     });
   }, []);
 
@@ -25,6 +26,14 @@ export default function Home(props) {
           height: "100%",
         }}
       >
+        <Button
+          backgroundColor="danger"
+          onClick={() => {
+            dispatchSessionRemoveAll();
+          }}
+        >
+          kill all sessions
+        </Button>
         <code>
           <pre>{JSON.stringify({ sessions }, null, 2)}</pre>
         </code>

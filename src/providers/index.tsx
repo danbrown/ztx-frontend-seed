@@ -1,8 +1,8 @@
+import axios from "axios";
+import { SWRConfig } from "swr";
 import { ThemeProvider } from "./ThemeProvider";
 import { LoadingProvider } from "./LoadingProvider";
-import { SWRConfig } from "swr";
-import axios from "axios";
-import SessionProvider from "./SessionProvider";
+import { SessionProvider } from "./SessionProvider";
 
 export const Providers = ({ children }) => {
   return (

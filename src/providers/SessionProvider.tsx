@@ -5,10 +5,10 @@ import { useWindow } from "@hooks/useWindow";
 
 // This provider will protect the pages from showing content before the zustand store is loaded
 // This is useful for pages that need to access the zustand store content, like session, account, etc.
-const SessionProvider = ({ children }) => {
+export const SessionProvider = ({ children }) => {
   const window = useWindow();
 
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const { loading: loadingZustand } = zustandStore.getState();
 
   useEffect(() => {
@@ -19,15 +19,13 @@ const SessionProvider = ({ children }) => {
 
   useEffect(() => {
     if (loadingZustand !== null) {
-      setLoading(loadingZustand);
+      setIsLoading(loadingZustand);
     }
   }, [loadingZustand]);
 
-  if (loading) {
+  if (isLoading) {
     return <LoadingScreen />;
   } else {
     return children;
   }
 };
-
-export default SessionProvider;

@@ -34,9 +34,13 @@ export interface SliceType {
   // Validate password reset token
   dispatchPasswordTokenValidate: (token: string) => Promise<void>;
 
-  // dispatchSessionInit: (session: any) => void;
-  dispatchSessionRefresh: () => Promise<ISession & IError>;
   // dispatchAuthorize: (account: any) => void;
+
+  // dispatchSessionInit: (session: any) => void;
+  dispatchSessionGetAll: () => Promise<ISession[]>;
+  dispatchSessionRefresh: () => Promise<ISession & IError>;
+  dispatchSessionRemove: (sessionToken: string) => Promise<void>;
+  dispatchSessionRemoveAll: () => Promise<void>;
 }
 
 // Interfaces
@@ -94,7 +98,6 @@ export interface ILoginParameters {
 
 export interface ILogoutParameters {
   sessionToken?: string;
-  accessToken?: string;
 }
 
 export interface IRegisterParameters {
@@ -147,9 +150,15 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   },
 
   // + Handle user logout
-  dispatchLogout: async ({ sessionToken = null, accessToken = null }) => {
+  dispatchLogout: async (params) => {
     return new Promise(async (resolve, reject) => {
-      const currentSession = get().session;
+      const { sessionToken = null } = params || {};
+
+      // get the current session from cookie
+      const currentSessionRequest = await selfApiWorker.post(
+        `/api/auth/session`
+      );
+      const currentSession = currentSessionRequest.data;
 
       // delete session from the server
       try {
@@ -223,6 +232,23 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
     });
   },
 
+  // + Handle get all sessions
+  dispatchSessionGetAll: async () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const sessionsRequest = await apiWorker.get(`/auth/sessions`);
+        const sessions = sessionsRequest.data;
+
+        resolve(sessions);
+      } catch (e) {
+        console.log("Unable to get sessions");
+        console.log(e);
+
+        reject();
+      }
+    });
+  },
+
   // + Handle session refresh
   dispatchSessionRefresh: async () => {
     return new Promise(async (resolve, reject) => {
@@ -231,7 +257,6 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         `/api/auth/session`
       );
       const currentSession = currentSessionRequest.data;
-      console.log("currentSession", currentSession);
 
       // refresh the session
       try {
@@ -244,7 +269,6 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         );
 
         const refreshedSession = refreshedSessionRequest.data;
-        console.log("refreshedSession2", refreshedSession);
 
         if (refreshedSession.error) {
           console.log("Unable to refresh session");
@@ -252,7 +276,7 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
           return reject(refreshedSession);
         }
 
-        // set the session cookie
+        // set the session cookie with the new session
         await selfApiWorker.post(`/api/auth`, {
           session: refreshedSession,
         });
@@ -269,6 +293,52 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         console.log("Unable to refresh session");
         console.log(e);
         return reject({ error: { message: "Unable to refresh session" } });
+      }
+    });
+  },
+
+  // + Handle remove session
+  dispatchSessionRemove: async (sessionToken) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await apiWorker.delete(`/auth/sessions/${sessionToken}`);
+        console.log("Removed session");
+
+        // logout the user
+        await get().dispatchLogout();
+
+        resolve();
+      } catch (e) {
+        console.log("Unable to remove session");
+        console.log(e);
+
+        // logout the user
+        await get().dispatchLogout();
+
+        reject();
+      }
+    });
+  },
+
+  // + Handle remove all sessions
+  dispatchSessionRemoveAll: async () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await apiWorker.delete(`/auth/sessions`);
+        console.log("Removed all sessions");
+
+        // logout the user
+        await get().dispatchLogout();
+
+        resolve();
+      } catch (e) {
+        console.log("Unable to remove all sessions");
+        console.log(e);
+
+        // logout the user
+        await get().dispatchLogout();
+
+        reject();
       }
     });
   },

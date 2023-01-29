@@ -78,17 +78,6 @@ apiWorker.interceptors.request.use(
 
           const refreshedSession = await dispatchSessionRefresh();
 
-          // if there is an error, log out and return the config
-          if (refreshedSession?.error) {
-            console.log("Session refresh failed, logging out...");
-
-            dispatchLogout({ sessionToken });
-
-            return Promise.reject({
-              error: "Session refresh failed, user logged out",
-            });
-          }
-
           // update the token in the header
           (config.headers as AxiosHeaders).set(
             "Authorization",
@@ -96,7 +85,15 @@ apiWorker.interceptors.request.use(
           );
         } catch (e) {
           console.log(e);
-          return Promise.reject({ error: "Session refresh failed" });
+
+          console.log("Session refresh failed, logging out...");
+
+          // if there is an error, log out and return the config
+          dispatchLogout({ sessionToken });
+
+          return Promise.reject({
+            error: "Session refresh failed, user logged out",
+          });
         }
       }
       // & TOKEN IS NOT EXPIRED, JUST USE THE CURRENT ONE
