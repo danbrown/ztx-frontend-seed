@@ -27,34 +27,26 @@ const apiWorker = axios.create({
 apiWorker.interceptors.request.use(
   async (config) => {
     // get the token from the store, and the refresh and logout functions
-    const { dispatchSessionRefresh, dispatchLogout, session } =
-      zustandStore.getState();
+    const { dispatchSessionRefresh, dispatchLogout } = zustandStore.getState();
 
     // initialize the token variables
     let accessToken = null,
       error = null,
       sessionToken = null;
 
-    // & GET SESSION TOKENS (store or server cookies)
-    //  if the session is already in the store, use it
+    // & GET SESSION TOKENS (server cookies)
     try {
-      if (session) {
-        accessToken = session.accessToken;
-        sessionToken = session.token;
-      }
-      // else if the session is not in the store, get it from the server cookie
-      else {
-        // get the token from the store, and the refresh function
-        const currentSessionRequest = await selfApiWorker.post(
-          `/api/auth/session`
-        );
-        console.log(currentSessionRequest);
+      // get the session from the server
+      // avoid using the stored session because it don't update between tabs
+      const currentSessionRequest = await selfApiWorker.post(
+        `/api/auth/session`
+      );
+      console.log(currentSessionRequest);
 
-        if (currentSessionRequest.data) {
-          accessToken = currentSessionRequest.data.accessToken;
-          error = currentSessionRequest.data.error;
-          sessionToken = currentSessionRequest.data.token;
-        }
+      if (currentSessionRequest.data) {
+        accessToken = currentSessionRequest.data.accessToken;
+        error = currentSessionRequest.data.error;
+        sessionToken = currentSessionRequest.data.token;
       }
     } catch (e) {
       console.log(e);

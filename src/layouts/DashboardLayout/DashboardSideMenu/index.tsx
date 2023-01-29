@@ -7,12 +7,14 @@ import {
   ButtonGroup,
   Button,
   useTheme,
+  Spacing,
 } from "@wipsie/ui";
 import { CloseOutlined } from "@ant-design/icons";
 import styles from "./SideMenu.module.css";
 import { DashboardRoutesBuilder } from "./DashboardRoutesBuilder";
 import { ACCOUNT_DASHBOARD_ROUTES } from "@routes/accountDashboardRoutes";
 import { useState } from "react";
+import { ZetahexAppLogo } from "@components/ZetahexAppLogo";
 
 export const DashboardSideMenu = ({ handleChange }) => {
   const theme = useTheme();
@@ -42,6 +44,9 @@ export const DashboardSideMenu = ({ handleChange }) => {
       </Hidden>
 
       <Box>
+        <ZetahexAppLogo />
+        <Spacing height={2} />
+
         <Container shape="rounded" p={1} backgroundColor="shade">
           <ButtonGroup shape="rounded" size="mini" fullWidth>
             <Button

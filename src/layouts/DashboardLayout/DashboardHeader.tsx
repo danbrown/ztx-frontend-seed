@@ -12,6 +12,7 @@ import {
 import { MenuOutlined } from "@ant-design/icons";
 import { DashboardMobileSidebar } from "./DashboardMobileSidebar";
 import { Config } from "@layouts/common/Config";
+import ThemeSwitch from "@layouts/common/ThemeSwitch";
 
 export const DashboardHeader = () => {
   const theme = useTheme();
@@ -70,6 +71,7 @@ export const DashboardHeader = () => {
             </Flex>
 
             <Flex direction="row" align="center" justify="between">
+              <ThemeSwitch />
               <Config />
             </Flex>
           </Box>

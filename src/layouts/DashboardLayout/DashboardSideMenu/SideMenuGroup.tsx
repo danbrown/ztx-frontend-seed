@@ -40,7 +40,7 @@ const MenuGroup = ({ ref, label, link, icon, items, current }) => {
           color={
             link && current.includes(link)
               ? theme.palette.primary[500]
-              : theme.palette.subtext
+              : theme.palette.text
           }
           active={active}
           fullWidth
@@ -57,15 +57,14 @@ const MenuGroup = ({ ref, label, link, icon, items, current }) => {
             <Container
               mr={1}
               p={0.8}
-              backgroundColor={
-                active ? theme.palette.primary[500] : "highlight"
-              }
+              backgroundColor={active ? theme.palette.primary[500] : "shade"}
               style={{
-                color: active ? theme.palette.text : theme.palette.subtext,
+                color: active ? theme.palette.white : theme.palette.subtext,
               }}
             >
               {icon}
             </Container>
+
             {label}
           </Flex>
         </Button>

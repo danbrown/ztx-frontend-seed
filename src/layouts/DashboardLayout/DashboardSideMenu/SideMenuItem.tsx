@@ -17,7 +17,7 @@ const MenuItem = ({ label, link, icon, active, external }) => {
         shape="square"
         active={active}
         variant="ghost"
-        color={active ? theme.palette.primary[500] : theme.palette.subtext}
+        color={active ? theme.palette.primary[500] : theme.palette.text}
         style={{
           textTransform: "capitalize",
           paddingLeft: 20,
@@ -31,13 +31,14 @@ const MenuItem = ({ label, link, icon, active, external }) => {
           <Container
             mr={1}
             p={0.8}
-            backgroundColor={active ? theme.palette.primary[500] : "highlight"}
+            backgroundColor={active ? theme.palette.primary[500] : "shade"}
             style={{
-              color: active ? theme.palette.text : theme.palette.subtext,
+              color: active ? theme.palette.white : theme.palette.subtext,
             }}
           >
             {icon}
           </Container>
+
           {label}
         </Flex>
       </Button>

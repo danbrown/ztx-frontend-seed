@@ -6,11 +6,21 @@ export const ZetahexAppLogo = ({ width = responsive(100, 200) }) => {
   const theme = useTheme();
 
   return (
-    <NextLink href={`${serviceLinks.main}`} style={{ width }}>
+    <NextLink href={`${serviceLinks.main}`}>
       {theme.type === "dark" ? (
-        <img src="/static/logo/white.svg" alt="Zetahex" title="Zetahex" />
+        <img
+          src="/static/logo/white.svg"
+          alt="Zetahex"
+          title="Zetahex"
+          style={{ width }}
+        />
       ) : (
-        <img src="/static/logo/black.svg" alt="Zetahex" title="Zetahex" />
+        <img
+          src="/static/logo/black.svg"
+          alt="Zetahex"
+          title="Zetahex"
+          style={{ width }}
+        />
       )}
     </NextLink>
   );
