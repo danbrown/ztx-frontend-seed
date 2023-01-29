@@ -6,6 +6,7 @@ import {
   useTheme,
   Container,
   responsive,
+  Typography,
 } from "@wipsie/ui";
 import SubMenuItem from "./SideSubMenuItem";
 import { replaceSlug } from "@utils/replaceSlug";
@@ -58,11 +59,13 @@ const MenuGroup = ({ ref, label, link, icon, items, current }) => {
               mr={1}
               p={0.8}
               backgroundColor={active ? theme.palette.primary[500] : "shade"}
-              style={{
-                color: active ? theme.palette.white : theme.palette.subtext,
-              }}
             >
-              {icon}
+              <Typography
+                variant="body1"
+                color={active ? theme.palette.white : theme.palette.subtext}
+              >
+                {icon}
+              </Typography>
             </Container>
 
             {label}

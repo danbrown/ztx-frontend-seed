@@ -15,37 +15,38 @@ export const initialState: OmittedFunctionKeys<SliceType> = {
 
 export interface SliceType {
   authenticated: boolean;
-  account: iAccount | null;
+  account: IAccount | null;
   session: ISession | null;
 
-  // Login
+  // @ AUTHENTICATION
   dispatchLogin: (params: ILoginParameters) => Promise<ISession & IError>;
-
-  // Logout
   dispatchLogout: (params?: ILogoutParameters) => Promise<void>;
-
-  // Register
   dispatchRegister: (
     params: IRegisterParameters
   ) => Promise<{ message: string }>;
-
-  // Send password reset email
   dispatchPasswordReset: (email: string) => Promise<void>;
-
-  // Validate password reset token
   dispatchPasswordTokenValidate: (token: string) => Promise<void>;
 
   // dispatchAuthorize: (account: any) => void;
 
-  // dispatchSessionInit: (session: any) => void;
+  // @ SESSIONS
+  dispatchSessionInit: () => Promise<ISession | null>;
   dispatchSessionGetAll: () => Promise<ISession[]>;
   dispatchSessionRefresh: () => Promise<ISession & IError>;
   dispatchSessionRemove: (sessionToken: string) => Promise<void>;
   dispatchSessionRemoveAll: () => Promise<void>;
+
+  // @ ACCOUNTS
+  // dispatchAccountGet: (accountId: string) => Promise<iAccount>;
+  // dispatchAccountGetAll: () => Promise<iAccount[]>;
+  dispatchAccountUpdate: (
+    accountId: string,
+    accountData: IEditAccountParameters
+  ) => Promise<IAccount>;
 }
 
 // Interfaces
-export interface iAccount {
+export interface IAccount {
   id: string;
   email: string;
   name: string;
@@ -65,6 +66,9 @@ export interface iAccount {
     bio: string;
     cover: string;
   };
+
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface ISession {
@@ -83,7 +87,7 @@ export interface ISession {
   createdAt: string;
   expiresAt: string;
 
-  account?: iAccount;
+  account?: IAccount; // account has session data
 }
 
 export interface IError {
@@ -109,6 +113,15 @@ export interface IRegisterParameters {
   confirmPassword: string;
 }
 
+export interface IEditAccountParameters {
+  name: string;
+  profile: {
+    avatar: string;
+    bio: string;
+    cover: string;
+  };
+}
+
 // Slice
 export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   set,
@@ -118,6 +131,7 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   account: null,
   session: null,
 
+  // @ AUTHENTICATION
   // + Handle account login
   dispatchLogin: async ({ identifier, password }) => {
     return new Promise(async (resolve, reject) => {
@@ -166,9 +180,7 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         if (sessionToken) {
           await apiWorker.delete(`/auth/sessions/${sessionToken}`);
         } else if (currentSession) {
-          await apiWorker.delete(
-            `/auth/sessions/accessToken/${currentSession?.token}`
-          );
+          await apiWorker.delete(`/auth/sessions/${currentSession?.token}`);
         }
       } catch (e) {
         console.log(e);
@@ -233,6 +245,56 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
     });
   },
 
+  // @ SESSIONS
+
+  // + Handle session init
+  dispatchSessionInit: async () => {
+    return new Promise(async (resolve, reject) => {
+      // get the current session from cookie
+      const currentSessionRequest = await selfApiWorker.post(
+        `/api/auth/session`
+      );
+      const currentSession: ISession & IError = currentSessionRequest.data;
+
+      // check if there is an error
+      if (currentSession.error) {
+        return reject(currentSession.error);
+      }
+
+      // validate the session
+      const sessionValidateRequest = await apiWorker.post(
+        `/auth/sessions/validate`,
+        {
+          token: currentSession.token,
+        }
+      );
+      const sessionValidate: ISession & IError = sessionValidateRequest.data;
+
+      // check if there is an error
+      if (sessionValidate.error) {
+        return reject(sessionValidate.error);
+      }
+
+      // get current account
+      const accountRequest = await apiWorker.get(`/auth/accounts/@me`);
+      const account: IAccount & IError = accountRequest.data;
+
+      // check if there is an error
+      if (account.error) {
+        return reject(account.error);
+      }
+
+      // set the session in the store
+      set((state) => ({
+        authenticated: true,
+        account,
+        session: currentSession,
+      }));
+
+      resolve(currentSession);
+    });
+  },
+
   // + Handle get all sessions
   dispatchSessionGetAll: async () => {
     return new Promise(async (resolve, reject) => {
@@ -264,7 +326,8 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
       // check if there is an error
       if (currentSession.error) {
         // session is not there, so we can't refresh it
-        DEBUG && alert("Unable get session from cookie");
+        DEBUG &&
+          alert("Unable get session" + JSON.stringify(currentSession.error));
         return reject({ error: { message: "Unable to refresh session" } });
       }
 
@@ -315,7 +378,6 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
           // set the session in the store
           set((state) => ({
             authenticated: true,
-            account: refreshedSession.account,
             session: refreshedSession,
           }));
 
@@ -337,7 +399,6 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         // set the session in the store, no need to set the cookie, it's already there
         set((state) => ({
           authenticated: true,
-          account: currentSession.account,
           session: currentSession,
         }));
 
@@ -349,20 +410,37 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   // + Handle remove session
   dispatchSessionRemove: async (sessionToken) => {
     return new Promise(async (resolve, reject) => {
-      try {
-        await apiWorker.delete(`/auth/sessions/${sessionToken}`);
-        console.log("Removed session");
+      const currentSessionRequest = await selfApiWorker.post(
+        `/api/auth/session`
+      );
+      const currentSession: ISession & IError = currentSessionRequest.data;
 
-        // logout the user
-        await get().dispatchLogout();
+      if (currentSession.error) {
+        // session is not there, so we can't refresh it
+        return reject({ error: { message: "Unable to remove session" } });
+      }
+
+      try {
+        // check if the removed session is the current session, if it is, logout the user
+        if (currentSession.token === sessionToken) {
+          await get().dispatchLogout(); // logout already removes the session from the server and the cookie
+        }
+        // else just remove the session from the server
+        else {
+          await apiWorker.delete(`/auth/sessions/${sessionToken}`);
+          console.log("Removed session");
+        }
 
         resolve();
       } catch (e) {
         console.log("Unable to remove session");
         console.log(e);
 
-        // logout the user
-        await get().dispatchLogout();
+        // check if the removed session is the current session, if it is, logout the user
+        if (currentSession.token === sessionToken) {
+          await get().dispatchLogout();
+          await selfApiWorker.post(`/api/auth/logout`);
+        }
 
         reject();
       }
@@ -386,6 +464,36 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
 
         // logout the user
         await get().dispatchLogout();
+
+        reject();
+      }
+    });
+  },
+
+  // @ ACCOUNT
+  // + Handle account update
+  dispatchAccountUpdate: async (accountId: string, accountData: IAccount) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const accountRequest = await apiWorker.put(
+          `/auth/accounts/${accountId}`,
+          accountData
+        );
+        const updatedAccount = accountRequest.data;
+
+        // update the account in the store
+        set((state) => ({
+          account: updatedAccount,
+          session: {
+            ...state.session,
+            account: updatedAccount,
+          },
+        }));
+
+        resolve(updatedAccount);
+      } catch (e) {
+        console.log("Unable to update account");
+        console.log(e);
 
         reject();
       }

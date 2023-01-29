@@ -34,32 +34,38 @@ apiWorker.interceptors.request.use(
     const { dispatchSessionRefresh, dispatchLogout } = zustandStore.getState();
 
     // & TRY TO REFRESH THE TOKEN
-    // ignore the refresh call if it's a refresh call and there is no error
-    if (config.url?.includes("refresh") === false) {
-      const refreshedSession = await dispatchSessionRefresh();
+    try {
+      // ignore the refresh call if it's a refresh call and there is no error
+      if (config.url?.includes("refresh") === false) {
+        const refreshedSession = await dispatchSessionRefresh();
 
-      if (refreshedSession.error) {
+        if (refreshedSession.error) {
+          // if there is an error, log out
+          DEBUG && console.log(refreshedSession.error);
+          DEBUG &&
+            alert(
+              "There is an error, or skipping" +
+                JSON.stringify(refreshedSession.error)
+            );
+
+          // & LOGOUT
+          dispatchLogout();
+          return Promise.reject(refreshedSession.error);
+        }
+
+        // if the token is not expired, just add the current session token in the header
+        (config.headers as AxiosHeaders).set(
+          "Authorization",
+          `Bearer ${refreshedSession?.accessToken}`
+        );
+      } else {
         // if there is an error, log out
-        DEBUG && console.log(refreshedSession.error);
-        DEBUG &&
-          alert(
-            "There is an error, or skipping" +
-              JSON.stringify(refreshedSession.error)
-          );
-
-        // & LOGOUT
-        dispatchLogout();
-        return Promise.reject(refreshedSession.error);
+        DEBUG && alert("Is a refresh call, skipping");
       }
-
-      // if the token is not expired, just add the current session token in the header
-      (config.headers as AxiosHeaders).set(
-        "Authorization",
-        `Bearer ${refreshedSession?.accessToken}`
-      );
-    } else {
+    } catch (error) {
       // if there is an error, log out
-      DEBUG && alert("Is a refresh call, skipping");
+      DEBUG && console.log(error);
+      DEBUG && alert("There is an error, or skipping" + JSON.stringify(error));
     }
 
     // & RETURN THE CONFIG

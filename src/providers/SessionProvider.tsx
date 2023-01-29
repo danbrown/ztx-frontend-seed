@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import LoadingScreen from "@components/LoadingScreen";
-import { zustandStore } from "@zustand/ZustandStoreProvider";
+import { useZustandStore, zustandStore } from "@zustand/ZustandStoreProvider";
 import { useWindow } from "@hooks/useWindow";
 import { useSyncLanguage } from "ni18n";
 
@@ -10,19 +10,33 @@ export const SessionProvider = ({ children }) => {
   const window = useWindow();
 
   const [isLoading, setIsLoading] = useState(true);
-  const { loading: loadingZustand, currentLanguage } = zustandStore.getState();
+  const {
+    loading: loadingZus,
+    dispatchSessionInit,
+    dispatchLogout,
+  } = useZustandStore("auth");
+  const { currentLanguage } = useZustandStore("settings");
 
+  // @ Session
   useEffect(() => {
     if (window !== null) {
-      zustandStore.setState({ loading: false });
+      dispatchSessionInit()
+        .then(() => {
+          zustandStore.setState({ loading: false }); // for loading state
+        })
+        .catch((error) => {
+          console.log(error);
+          dispatchLogout();
+        });
     }
   }, [window]);
 
+  // @ Loading
   useEffect(() => {
-    if (loadingZustand !== null) {
-      setIsLoading(loadingZustand);
+    if (loadingZus !== null) {
+      setIsLoading(loadingZus);
     }
-  }, [loadingZustand]);
+  }, [loadingZus]);
 
   // @ Translations
   useSyncLanguage(currentLanguage);

@@ -1,5 +1,12 @@
 import { NextLink } from "@components/NextLink";
-import { Button, Container, Flex, responsive, useTheme } from "@wipsie/ui";
+import {
+  Button,
+  Container,
+  Flex,
+  responsive,
+  Typography,
+  useTheme,
+} from "@wipsie/ui";
 
 const MenuItem = ({ label, link, icon, active, external }) => {
   const theme = useTheme();
@@ -32,11 +39,13 @@ const MenuItem = ({ label, link, icon, active, external }) => {
             mr={1}
             p={0.8}
             backgroundColor={active ? theme.palette.primary[500] : "shade"}
-            style={{
-              color: active ? theme.palette.white : theme.palette.subtext,
-            }}
           >
-            {icon}
+            <Typography
+              variant="body1"
+              color={active ? theme.palette.white : theme.palette.subtext}
+            >
+              {icon}
+            </Typography>
           </Container>
 
           {label}
