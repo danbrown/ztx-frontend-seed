@@ -1,5 +1,6 @@
 import { OmittedFunctionKeys } from "@customTypes/OmittedFunctionKeys.type";
 import apiWorker, { selfApiWorker } from "@utils/apiWorker";
+import { decodeJwt } from "@utils/decodeJwt";
 import { ZustandStoreState } from "@zustand/ZustandStoreProvider";
 import { StateCreator } from "zustand";
 
@@ -252,47 +253,95 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   // + Handle session refresh
   dispatchSessionRefresh: async () => {
     return new Promise(async (resolve, reject) => {
+      const DEBUG = false;
+
       // get the current session from cookie
       const currentSessionRequest = await selfApiWorker.post(
         `/api/auth/session`
       );
-      const currentSession = currentSessionRequest.data;
+      const currentSession: ISession & IError = currentSessionRequest.data;
 
-      // refresh the session
-      try {
-        const refreshedSessionRequest = await apiWorker.post(
-          `/auth/sessions/refresh`,
-          {
-            token: currentSession.token,
-            refreshToken: currentSession.refreshToken,
+      // check if there is an error
+      if (currentSession.error) {
+        // session is not there, so we can't refresh it
+        DEBUG && alert("Unable get session from cookie");
+        return reject({ error: { message: "Unable to refresh session" } });
+      }
+
+      // check if the session is expired
+      const { exp: tokenExpDate } = decodeJwt(currentSession.accessToken);
+
+      // consider the refresh token expired it's 5 minutes before the actual expiration date
+      const tokenExpDateWithRefresh = tokenExpDate - 300; // 300 is 5 minutes in seconds
+      const currentDate = new Date().getTime() / 1000;
+
+      // if the token is expired, refresh it, refreshedSession will be already updated in the store, so we can get the new token from there
+      if (currentDate > tokenExpDateWithRefresh) {
+        // & REFRESH THE TOKEN
+        try {
+          DEBUG && alert("Token expired, refreshing session...");
+
+          const refreshedSessionRequest = await apiWorker.post(
+            `/auth/sessions/refresh`,
+            {
+              token: currentSession.token,
+              refreshToken: currentSession.refreshToken,
+            }
+          );
+
+          const refreshedSession = refreshedSessionRequest.data;
+
+          DEBUG &&
+            alert("Session refreshed" + JSON.stringify(refreshedSession));
+
+          if (refreshedSession.error) {
+            DEBUG &&
+              alert(
+                "Unable to refresh session" + JSON.stringify(refreshedSession)
+              );
+
+            return reject(refreshedSession);
           }
-        );
 
-        const refreshedSession = refreshedSessionRequest.data;
+          // set the session cookie with the new session
+          await selfApiWorker
+            .post(`/api/auth`, {
+              session: refreshedSession,
+            })
+            .then((res) => {
+              DEBUG && alert("Session cookie set");
+            });
 
-        if (refreshedSession.error) {
-          console.log("Unable to refresh session");
-          console.log(refreshedSession.error);
-          return reject(refreshedSession);
+          // set the session in the store
+          set((state) => ({
+            authenticated: true,
+            account: refreshedSession.account,
+            session: refreshedSession,
+          }));
+
+          return resolve(refreshedSession);
+        } catch (e) {
+          DEBUG && alert("Unable to refresh session" + JSON.stringify(e));
+          return reject({ error: { message: "Unable to refresh session" } });
         }
+      } else {
+        // token is not expired, so we can just return the current session
 
-        // set the session cookie with the new session
-        await selfApiWorker.post(`/api/auth`, {
-          session: refreshedSession,
-        });
+        DEBUG &&
+          alert(
+            "Session is not expired, there is still " +
+              ((tokenExpDateWithRefresh - currentDate) / 60).toFixed(2) +
+              " minutes left"
+          );
 
-        // set the session in the store
+        // set the session in the store, no need to set the cookie, it's already there
         set((state) => ({
           authenticated: true,
-          account: refreshedSession.account,
-          session: refreshedSession,
+          account: currentSession.account,
+          session: currentSession,
         }));
 
-        resolve(refreshedSession);
-      } catch (e) {
-        console.log("Unable to refresh session");
-        console.log(e);
-        return reject({ error: { message: "Unable to refresh session" } });
+        return resolve(currentSession);
       }
     });
   },
