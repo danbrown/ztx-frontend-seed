@@ -81,7 +81,7 @@ export default function Home(props) {
 
       <Grid container>
         {sessions.map((thisSession) => (
-          <Grid item xs={12} sm={6} md={4} lg={3}>
+          <Grid item xs={12} sm={6} md={4}>
             <Container>
               <Grid container>
                 <Grid item xs={12}>
