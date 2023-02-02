@@ -1,8 +1,8 @@
 import { OmittedFunctionKeys } from "@customTypes/OmittedFunctionKeys.type";
-import apiWorker, { selfApiWorker } from "@utils/apiWorker";
-import { decodeJwt } from "@utils/decodeJwt";
 import { ZustandStoreState } from "@zustand/ZustandStoreProvider";
 import { StateCreator } from "zustand";
+import apiWorker, { selfApiWorker } from "@utils/apiWorker";
+import { decodeJwt } from "@utils/decodeJwt";
 
 // Zustand
 export const sliceName = "auth";

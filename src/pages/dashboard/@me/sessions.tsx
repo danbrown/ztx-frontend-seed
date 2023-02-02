@@ -20,6 +20,7 @@ import { ISession } from "@zustand/slices/auth.slice";
 
 export default function Home(props) {
   const theme = useTheme();
+  const pageTitle = "Sessions";
 
   const {
     account,
@@ -46,7 +47,11 @@ export default function Home(props) {
   }, []);
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      meta={{
+        title: pageTitle,
+      }}
+    >
       <Breadcrumbs
         items={[
           {
@@ -54,7 +59,7 @@ export default function Home(props) {
             href: `${serviceLinks.accountDashboard}`,
           },
           {
-            label: "Sessions",
+            label: pageTitle,
             href: `${serviceLinks.accountDashboard}/sessions`,
             inactive: true,
           },
@@ -64,7 +69,7 @@ export default function Home(props) {
       <Spacing height={2} />
 
       <Flex align="center" justify="between" direction="row" fullWidth>
-        <Typography variant="h1">Sessions</Typography>
+        <Typography variant="h1">{pageTitle}</Typography>
 
         <Button
           backgroundColor="danger"
@@ -81,7 +86,7 @@ export default function Home(props) {
 
       <Grid container>
         {sessions.map((thisSession) => (
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={4} key={thisSession.id}>
             <Container>
               <Grid container>
                 <Grid item xs={12}>
@@ -156,10 +161,9 @@ export default function Home(props) {
         ))}
       </Grid>
 
-      <Spacing height={2} />
-
+      {/* Loading */}
       {isLoadingSessions && (
-        <Flex fullWidth align="center" justify="center">
+        <Flex fullWidth align="center" justify="center" mt={2}>
           <Loading type="dots" />
         </Flex>
       )}

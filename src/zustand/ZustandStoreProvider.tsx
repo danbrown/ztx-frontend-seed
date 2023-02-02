@@ -7,18 +7,6 @@ import { OmittedFunctionKeys } from "@customTypes/OmittedFunctionKeys.type";
 
 // Slices
 import {
-  sliceName as sliceName_Bears,
-  SliceType as SliceType_Bears,
-  initialState as initialState_Bears,
-  createSlice as createSlice_Bears,
-} from "./slices/bear.slice";
-import {
-  sliceName as sliceName_Fishes,
-  SliceType as sliceType_Fishes,
-  initialState as initialState_Fishes,
-  createSlice as createSlice_Fishes,
-} from "./slices/fish.slice";
-import {
   sliceName as sliceName_Posts,
   SliceType as SliceType_Posts,
   initialState as initialState_Posts,
@@ -36,14 +24,19 @@ import {
   initialState as initialState_Auth,
   createSlice as createSlice_Auth,
 } from "./slices/auth.slice";
+import {
+  sliceName as sliceName_Apps,
+  SliceType as SliceType_Apps,
+  initialState as initialState_Apps,
+  createSlice as createSlice_Apps,
+} from "./slices/apps.slice";
 
 // & Scoped Types - Joint all slices into one type, scoped
 type ZustandStoreJoints = {
-  [sliceName_Bears]: SliceType_Bears;
-  [sliceName_Fishes]: sliceType_Fishes;
   [sliceName_Posts]: SliceType_Posts;
   [sliceName_Settings]: SliceType_Settings;
   [sliceName_Auth]: SliceType_Auth;
+  [sliceName_Apps]: SliceType_Apps;
 };
 
 // Here we add the loading property to each slice, loading is universal to the slices
@@ -63,25 +56,23 @@ type ZustandStoreInitialState = OmittedFunctionKeys<ZustandStoreState>;
 // & Initial State
 const initialState: ZustandStoreInitialState = {
   loading: null,
-  ...initialState_Bears,
-  ...initialState_Fishes,
   ...initialState_Posts,
   ...initialState_Settings,
   ...initialState_Auth,
+  ...initialState_Apps,
 };
 
-// Store
+// & Store
 export const zustandStore = create<ZustandStoreState>()(
   devtools(
     persist(
       (...a) => ({
         ...initialState,
 
-        ...createSlice_Bears(...a),
-        ...createSlice_Fishes(...a),
         ...createSlice_Posts(...a),
         ...createSlice_Settings(...a),
         ...createSlice_Auth(...a),
+        ...createSlice_Apps(...a),
       }),
 
       {

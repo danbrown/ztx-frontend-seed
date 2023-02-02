@@ -38,7 +38,7 @@ export const AuthorizeUserSignedIn = ({ appData }) => {
         </NextLink>
         <br />
         <NextLink
-          href={`${serviceLinks.auth.logout}?to=${window.location.href}`}
+          href={`${serviceLinks.auth.logout}?to=${window?.location?.href}`}
         >
           Not you?
         </NextLink>

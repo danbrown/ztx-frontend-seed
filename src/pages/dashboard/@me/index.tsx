@@ -26,14 +26,6 @@ export default function Home(props) {
           height: "100%",
         }}
       >
-        <Button
-          backgroundColor="danger"
-          onClick={() => {
-            dispatchSessionRemoveAll();
-          }}
-        >
-          kill all sessions
-        </Button>
         <code>
           <pre>{JSON.stringify({ sessions }, null, 2)}</pre>
         </code>

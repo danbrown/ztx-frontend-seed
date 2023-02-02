@@ -1,6 +1,6 @@
-
 import { serviceLinks } from "@config/links";
 import {
+  Home01Icon,
   LayersThree01Icon,
   Monitor01Icon,
   User01Icon,
@@ -13,8 +13,8 @@ export const ACCOUNT_DASHBOARD_ROUTES = [
   { type: "TITLE", label: "General" },
   {
     type: "ITEM",
-    label: "All Apps",
-    icon: <LayersThree01Icon />,
+    label: "Home",
+    icon: <Home01Icon />,
     link: `${serviceLinks.accountDashboard}`,
   },
 
@@ -23,18 +23,18 @@ export const ACCOUNT_DASHBOARD_ROUTES = [
   */
   {
     type: "TITLE",
-    label: "Content",
+    label: "Apps",
     badge: {
       label: "New",
       color: "success",
     },
   },
-  // {
-  //   type: "ITEM",
-  //   label: "Media Library",
-  //   icon: <Image03Icon />,
-  //   link: `${serviceLinks.accountDashboard}/media`,
-  // },
+  {
+    type: "ITEM",
+    label: "All Apps",
+    icon: <LayersThree01Icon />,
+    link: `${serviceLinks.accountDashboard}/apps`,
+  },
 
   /* 
     @ ACCOUNT ROUTES

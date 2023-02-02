@@ -20,10 +20,16 @@ import { EditAccountForm } from "@components/Accounts/EditAccountForm";
 export default function Home(props) {
   const theme = useTheme();
 
+  const pageTitle = "My Profile";
+
   const { account } = useZustandStore("auth");
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      meta={{
+        title: pageTitle,
+      }}
+    >
       <Breadcrumbs
         items={[
           {
@@ -31,7 +37,7 @@ export default function Home(props) {
             href: `${serviceLinks.accountDashboard}`,
           },
           {
-            label: "My Profile",
+            label: pageTitle,
             href: `${serviceLinks.accountDashboard}/profile`,
             inactive: true,
           },
@@ -41,7 +47,7 @@ export default function Home(props) {
       <Spacing height={2} />
 
       <Flex align="center" justify="between" direction="row" fullWidth>
-        <Typography variant="h1">My Profile</Typography>
+        <Typography variant="h1">{pageTitle}</Typography>
       </Flex>
 
       <Spacing height={4} />

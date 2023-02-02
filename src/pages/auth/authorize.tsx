@@ -8,12 +8,14 @@ import { AuthorizeAvatarsBox } from "@components/Auth/Authorize/AuthorizeAvatars
 import { AuthorizeContextText } from "@components/Auth/Authorize/AuthorizeContextText";
 import { AuthorizeUserSignedIn } from "@components/Auth/Authorize/AuthorizeUserSignedIn";
 import { useZustandStore } from "@zustand/ZustandStoreProvider";
+import { useRouter } from "next/router";
 
 export default function AuthorizePage(props) {
   const theme = useTheme();
+  const router = useRouter();
   const { authenticated, session } = useZustandStore("auth");
 
-  const appData = {
+  const mockAppData = {
     name: "Neobeasts",
     description: "A creepy social network for all creatures",
     logo: "https://files.library.wipsie.com/project_avatars/31ff7363-167b-4fad-939b-0fab80b52dc6_neobeasts.jpg",
@@ -23,6 +25,8 @@ export default function AuthorizePage(props) {
     ownerSource: "THIRD_PARTY",
   };
 
+  const { client_id } = router.query;
+
   return (
     <AuthLayout
       direction={{ xs: "column", md: "row" }}
@@ -30,22 +34,22 @@ export default function AuthorizePage(props) {
       justify="center"
     >
       {/* Avatars box */}
-      <AuthorizeAvatarsBox appData={appData} />
+      <AuthorizeAvatarsBox appData={mockAppData} />
 
       {/* Source oriented text */}
-      <AuthorizeContextText appData={appData} />
+      <AuthorizeContextText appData={mockAppData} />
 
       {/* Signed in */}
-      <AuthorizeUserSignedIn appData={appData} />
+      <AuthorizeUserSignedIn appData={mockAppData} />
 
       {/* Scopes box */}
-      <AuthorizeScopesBox appData={appData} />
+      <AuthorizeScopesBox appData={mockAppData} />
 
       {/* App Information Box */}
-      <AuthorizeAppInfoBox appData={appData} />
+      <AuthorizeAppInfoBox appData={mockAppData} />
 
       {/* Action Buttons */}
-      <AuthorizeActionButtons appData={appData} />
+      <AuthorizeActionButtons appData={mockAppData} />
 
       {/* Not signed in - Login Form */}
       {(!authenticated || !session) && <LoginForm />}
