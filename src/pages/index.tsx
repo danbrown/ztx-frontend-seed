@@ -16,7 +16,6 @@ import { useTranslate } from "@hooks/useTranslation";
 export default function Home(props) {
   const theme = useTheme();
 
-  const { addFish, fishes } = useZustandStore("fishes");
   const { posts } = useZustandSwr("posts", SWR_POSTS_KEY);
 
   const { translate, languages, language, changeLanguage } = useTranslate();
@@ -91,7 +90,7 @@ export default function Home(props) {
           </Typography>
           <Spacing width={1} />
           <Typography variant="h4" color="subtext">
-            {fishes}
+            0
           </Typography>
         </ZetaHeader2>
 
@@ -103,9 +102,7 @@ export default function Home(props) {
               backgroundColor="neutral"
               shape="square"
               fullWidth
-              onClick={() => {
-                addFish();
-              }}
+              onClick={() => {}}
             >
               neutral
             </ZetaButton>
@@ -115,9 +112,7 @@ export default function Home(props) {
               backgroundColor="success"
               shape="square"
               fullWidth
-              onClick={() => {
-                addFish();
-              }}
+              onClick={() => {}}
             >
               Success
             </ZetaButton>
@@ -127,9 +122,7 @@ export default function Home(props) {
               backgroundColor="info"
               shape="square"
               fullWidth
-              onClick={() => {
-                addFish();
-              }}
+              onClick={() => {}}
             >
               Info
             </ZetaButton>
@@ -139,9 +132,7 @@ export default function Home(props) {
               backgroundColor="warning"
               shape="square"
               fullWidth
-              onClick={() => {
-                addFish();
-              }}
+              onClick={() => {}}
             >
               Warning
             </ZetaButton>
@@ -152,9 +143,7 @@ export default function Home(props) {
               backgroundColor="danger"
               shape="square"
               fullWidth
-              onClick={() => {
-                addFish();
-              }}
+              onClick={() => {}}
             >
               Danger
             </ZetaButton>

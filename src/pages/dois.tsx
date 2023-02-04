@@ -8,21 +8,13 @@ import { SWR_POSTS_KEY } from "@zustand/slices/posts.slice";
 export default function Home(props) {
   const theme = useTheme();
 
-  const { addFish, fishes } = useZustandStore("fishes");
   const { posts, testPromise } = useZustandSwr("posts", SWR_POSTS_KEY);
 
   return (
     <DefaultLayout>
-      {fishes}
       <NextLink href="/">Um</NextLink>
 
-      <Button
-        onClick={() => {
-          addFish();
-        }}
-      >
-        Add Fish
-      </Button>
+      <Button onClick={() => {}}>Add Fish</Button>
 
       <code>
         POSTS
