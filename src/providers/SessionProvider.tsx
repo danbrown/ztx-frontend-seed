@@ -26,7 +26,9 @@ export const SessionProvider = ({ children }) => {
         })
         .catch((error) => {
           console.log(error);
-          dispatchLogout();
+          dispatchLogout().then(() => {
+            zustandStore.setState({ loading: false }); // for loading state
+          });
         });
     }
   }, [window]);

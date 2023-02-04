@@ -16,8 +16,11 @@ const apiWorker = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_GATEWAY_URL,
   headers: {
     "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-    Authorization: "",
+    // "Access-Control-Allow-Origin": "*",
+    // Authorization: "",
+    Authorization: `Basic ${Buffer.from(
+      `${process.env.NEXT_PUBLIC_API_GATEWAY_CLIENT_ID}:${process.env.NEXT_PUBLIC_API_GATEWAY_CLIENT_SECRET}`
+    ).toString("base64")}`,
   },
 });
 
@@ -55,8 +58,8 @@ apiWorker.interceptors.request.use(
 
         // if the token is not expired, just add the current session token in the header
         (config.headers as AxiosHeaders).set(
-          "Authorization",
-          `Bearer ${refreshedSession?.accessToken}`
+          "token",
+          `${refreshedSession?.accessToken}`
         );
       } else {
         // if there is an error, log out

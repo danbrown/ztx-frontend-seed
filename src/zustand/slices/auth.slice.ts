@@ -179,7 +179,7 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
       try {
         if (sessionToken) {
           await apiWorker.delete(`/auth/sessions/${sessionToken}`);
-        } else if (currentSession) {
+        } else if (!currentSession?.error) {
           await apiWorker.delete(`/auth/sessions/${currentSession?.token}`);
         }
       } catch (e) {
