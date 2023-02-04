@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Breadcrumbs,
   Button,
   Container,
@@ -12,7 +13,6 @@ import {
 } from "@wipsie/ui";
 import { useZustandStore } from "@zustand/ZustandStoreProvider";
 import { useEffect, useState } from "react";
-import apiWorker from "@utils/apiWorker";
 import { DashboardLayout } from "@layouts/DashboardLayout/DashboardLayout";
 import { serviceLinks } from "@config/links";
 import { browsersList } from "@config/index";
@@ -107,16 +107,28 @@ export default function Home(props) {
                   </Typography>
                 </Grid>
                 <Grid item xs={2.5}>
-                  {browsersList.includes(thisSession.browser) && (
-                    <Container backgroundColor="highlight" p={1}>
+                  <Container
+                    display="flex"
+                    align="center"
+                    justify="center"
+                    backgroundColor="highlight"
+                    p={1}
+                  >
+                    {browsersList.includes(thisSession.browser) ? (
                       <img
                         src={`/static/browsers/${thisSession.browser
                           .toLowerCase()
                           .replace(" ", "-")}.png`}
                         alt=""
                       />
-                    </Container>
-                  )}
+                    ) : (
+                      <Avatar
+                        alt="?"
+                        xs="small"
+                        backgroundColor={theme.palette.highlight}
+                      />
+                    )}
+                  </Container>
                 </Grid>
                 <Grid item xs={9.5}>
                   <Typography variant="body1">{thisSession.browser}</Typography>

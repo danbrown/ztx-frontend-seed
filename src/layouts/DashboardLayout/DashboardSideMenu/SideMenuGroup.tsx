@@ -12,7 +12,7 @@ import SubMenuItem from "./SideSubMenuItem";
 import { replaceSlug } from "@utils/replaceSlug";
 import { ChevronDownIcon, ChevronRightIcon } from "@wipsie/icons";
 
-const MenuGroup = ({ ref, label, link, icon, items, current }) => {
+const MenuGroup = ({ key, ref, label, link, icon, items, current }) => {
   const theme = useTheme();
   const [open, setOpen] = useState(link && current.includes(link));
 
@@ -20,6 +20,7 @@ const MenuGroup = ({ ref, label, link, icon, items, current }) => {
 
   return (
     <Collapsible
+      key={key}
       as={Flex}
       p={0}
       ref={ref}
@@ -77,6 +78,7 @@ const MenuGroup = ({ ref, label, link, icon, items, current }) => {
         {items.map((item) => {
           return (
             <SubMenuItem
+              key={item.label}
               label={item.label}
               link={replaceSlug(item.link, link)}
               icon={item.icon}

@@ -9,8 +9,6 @@ import { ZetaInput } from "@components/ZetaComponents/ZetaInput";
 import { ZetaHeader2 } from "@components/ZetaComponents/ZetaHeader2";
 import { ZetaButton } from "@components/ZetaComponents/ZetaButton";
 import { ZetaMaterials } from "@components/ZetaComponents/ZetaMaterials";
-import apiWorker from "@utils/apiWorker";
-import { useTranslation } from "react-i18next";
 import { useTranslate } from "@hooks/useTranslation";
 
 export default function Home(props) {
@@ -156,11 +154,7 @@ export default function Home(props) {
         backgroundColor="primary"
         shape="square"
         fullWidth
-        onClick={async () => {
-          // const res = await selfApiWorker.post("/api/auth/session");
-          const res = await apiWorker.get("/auth/status");
-          console.log(res.data);
-        }}
+        onClick={async () => {}}
       >
         test session call
       </ZetaButton>

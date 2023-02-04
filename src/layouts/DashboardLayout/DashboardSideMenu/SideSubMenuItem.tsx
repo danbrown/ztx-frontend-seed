@@ -3,10 +3,11 @@ import { Button, responsive, useTheme } from "@wipsie/ui";
 
 import isCurrentPath from "./isCurrentPath";
 
-const SubMenuitem = ({ label, link, icon, current, external }) => {
+const SubMenuitem = ({ key, label, link, icon, current, external }) => {
   const theme = useTheme();
   return (
     <NextLink
+      key={key}
       href={link}
       target={link.startsWith("http") || external ? "_blank" : undefined}
       rel={link.startsWith("http") ? "noopener noreferrer" : undefined}

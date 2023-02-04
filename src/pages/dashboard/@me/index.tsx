@@ -1,7 +1,6 @@
 import { Button, useTheme } from "@wipsie/ui";
 import { useZustandStore } from "@zustand/ZustandStoreProvider";
 import { useEffect, useState } from "react";
-import apiWorker from "@utils/apiWorker";
 import { DashboardLayout } from "@layouts/DashboardLayout/DashboardLayout";
 
 export default function Home(props) {

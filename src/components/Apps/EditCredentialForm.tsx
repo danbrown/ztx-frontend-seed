@@ -5,6 +5,7 @@ import {
   Flex,
   Grid,
   Input,
+  Loading,
   Spacing,
   TextArea,
   useTheme,
@@ -58,11 +59,14 @@ export const EditCredentialForm = ({ initialData = null }) => {
 
   // start scopes
   const [availableScopes, setAvailableScopes] = useState([]);
+  const [isLoadingScopes, setIsLoadingScopes] = useState(false);
 
   useEffect(() => {
     if (currentApp) {
+      setIsLoadingScopes(true);
       dispatchGetAvailableScopes().then((response) => {
         setAvailableScopes(response);
+        setIsLoadingScopes(false);
       });
     }
   }, [currentApp]);
@@ -192,6 +196,14 @@ export const EditCredentialForm = ({ initialData = null }) => {
                       </Flex>
                     </Grid>
                   ))}
+
+                  {isLoadingScopes && (
+                    <Grid item xs={12}>
+                      <Flex fullWidth justify="center">
+                        <Loading type="dots" />
+                      </Flex>
+                    </Grid>
+                  )}
                 </Grid>
               </Container>
             </Grid>

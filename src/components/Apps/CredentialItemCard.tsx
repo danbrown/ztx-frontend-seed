@@ -71,6 +71,7 @@ export const CredentialItemCard = ({
           >
             Client Id:
           </Typography>
+          <Spacing height={0.5} />
           <Input
             value={credentialData.clientId}
             fullWidth
@@ -101,7 +102,7 @@ export const CredentialItemCard = ({
           >
             Client Secret:
           </Typography>
-
+          <Spacing height={0.5} />
           {credentialSecret ? (
             <Input
               value={credentialSecret.clientSecret}
@@ -201,6 +202,7 @@ export const CredentialItemCard = ({
           <Button
             fullWidth
             variant="outlined"
+            size="small"
             backgroundColor="danger"
             disabled={isLoadingSecret || isLoadingDelete}
             onClick={() => {
@@ -230,7 +232,11 @@ export const CredentialItemCard = ({
           <SlugNextLink
             href={`${serviceLinks.appDashboard}/credentials/new?id=${credentialData.id}`}
           >
-            <Button fullWidth disabled={isLoadingSecret || isLoadingDelete}>
+            <Button
+              size="small"
+              fullWidth
+              disabled={isLoadingSecret || isLoadingDelete}
+            >
               Edit
             </Button>
           </SlugNextLink>

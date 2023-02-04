@@ -10,7 +10,6 @@ import {
 } from "@wipsie/ui";
 import { useZustandStore } from "@zustand/ZustandStoreProvider";
 import { useEffect, useState } from "react";
-import apiWorker from "@utils/apiWorker";
 import { DashboardLayout } from "@layouts/DashboardLayout/DashboardLayout";
 import { serviceLinks } from "@config/links";
 import { NextLink } from "@components/NextLink";

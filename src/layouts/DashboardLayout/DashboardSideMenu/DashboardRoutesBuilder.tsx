@@ -16,6 +16,7 @@ export const DashboardRoutesBuilder = ({ routes }) => {
           case "ITEM":
             return item.items ? (
               <MenuGroup
+                key={item.label}
                 ref={createRef()}
                 label={item.label}
                 link={replaceSlug(
@@ -38,6 +39,7 @@ export const DashboardRoutesBuilder = ({ routes }) => {
             ) : (
               <>
                 <MenuItem
+                  key={item.label}
                   label={item.label}
                   link={replaceSlug(item.link, appSlug)}
                   icon={item.icon}

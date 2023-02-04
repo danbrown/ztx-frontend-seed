@@ -1,7 +1,7 @@
 import { OmittedFunctionKeys } from "@customTypes/OmittedFunctionKeys.type";
 import { ZustandStoreState } from "@zustand/ZustandStoreProvider";
 import { StateCreator } from "zustand";
-import apiWorker, { selfApiWorker } from "@utils/apiWorker";
+import { selfApiWorker, apiWorker } from "@utils/apiWorker";
 import { decodeJwt } from "@utils/decodeJwt";
 
 // Zustand
@@ -12,38 +12,6 @@ export const initialState: OmittedFunctionKeys<SliceType> = {
   account: null,
   session: null,
 };
-
-export interface SliceType {
-  authenticated: boolean;
-  account: IAccount | null;
-  session: ISession | null;
-
-  // @ AUTHENTICATION
-  dispatchLogin: (params: ILoginParameters) => Promise<ISession & IError>;
-  dispatchLogout: (params?: ILogoutParameters) => Promise<void>;
-  dispatchRegister: (
-    params: IRegisterParameters
-  ) => Promise<{ message: string }>;
-  dispatchPasswordReset: (email: string) => Promise<void>;
-  dispatchPasswordTokenValidate: (token: string) => Promise<void>;
-
-  // dispatchAuthorize: (account: any) => void;
-
-  // @ SESSIONS
-  dispatchSessionInit: () => Promise<ISession | null>;
-  dispatchSessionGetAll: () => Promise<ISession[]>;
-  dispatchSessionRefresh: () => Promise<ISession & IError>;
-  dispatchSessionRemove: (sessionToken: string) => Promise<void>;
-  dispatchSessionRemoveAll: () => Promise<void>;
-
-  // @ ACCOUNTS
-  // dispatchAccountGet: (accountId: string) => Promise<iAccount>;
-  // dispatchAccountGetAll: () => Promise<iAccount[]>;
-  dispatchAccountUpdate: (
-    accountId: string,
-    accountData: IEditAccountParameters
-  ) => Promise<IAccount>;
-}
 
 // Interfaces
 export interface IAccount {
@@ -99,6 +67,7 @@ export interface IError {
 export interface ILoginParameters {
   identifier: string;
   password: string;
+  userAgent?: string;
 }
 
 export interface ILogoutParameters {
@@ -123,6 +92,40 @@ export interface IEditAccountParameters {
 }
 
 // Slice
+export interface SliceType {
+  authenticated: boolean;
+  account: IAccount | null;
+  session: ISession | null;
+
+  // @ AUTHENTICATION
+  dispatchLogin: (params: ILoginParameters) => Promise<ISession & IError>;
+  dispatchLogout: (params?: ILogoutParameters) => Promise<void>;
+  dispatchRegister: (
+    params: IRegisterParameters
+  ) => Promise<{ message: string }>;
+  dispatchPasswordReset: (email: string) => Promise<void>;
+  dispatchPasswordTokenValidate: (token: string) => Promise<void>;
+
+  // dispatchAuthorize: (account: any) => void;
+
+  // @ SESSIONS
+  dispatchSessionInit: () => Promise<ISession | null>;
+  dispatchSessionGetAll: () => Promise<ISession[]>;
+  dispatchSessionRefresh: (
+    currentSession: ISession
+  ) => Promise<ISession & IError>;
+  dispatchSessionRemove: (sessionToken: string) => Promise<void>;
+  dispatchSessionRemoveAll: () => Promise<void>;
+
+  // @ ACCOUNTS
+  // dispatchAccountGet: (accountId: string) => Promise<iAccount>;
+  // dispatchAccountGetAll: () => Promise<iAccount[]>;
+  dispatchAccountUpdate: (
+    accountId: string,
+    accountData: IEditAccountParameters
+  ) => Promise<IAccount>;
+}
+
 export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   set,
   get
@@ -133,20 +136,19 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
 
   // @ AUTHENTICATION
   // + Handle account login
-  dispatchLogin: async ({ identifier, password }) => {
+  dispatchLogin: async ({ identifier, password, userAgent }) => {
     return new Promise(async (resolve, reject) => {
       // login the account
-      const loginRequest = await apiWorker.post(`/auth/login`, {
+      const newSession = await apiWorker("POST", `/auth/login`, {
         identifier,
         password,
-      });
+        userAgent,
+      }).then((res) => res.json());
 
       // login failed
-      if (loginRequest.data?.error) {
-        return reject(loginRequest.data);
+      if (newSession?.error) {
+        return reject(newSession);
       }
-
-      const newSession = loginRequest.data;
 
       // set the session cookie
       await selfApiWorker.post(`/api/auth`, {
@@ -178,9 +180,9 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
       // delete session from the server
       try {
         if (sessionToken) {
-          await apiWorker.delete(`/auth/sessions/${sessionToken}`);
+          await apiWorker("DELETE", `/auth/sessions/${sessionToken}`);
         } else if (!currentSession?.error) {
-          await apiWorker.delete(`/auth/sessions/${currentSession?.token}`);
+          await apiWorker("DELETE", `/auth/sessions/${currentSession?.token}`);
         }
       } catch (e) {
         console.log(e);
@@ -216,15 +218,15 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
       }
 
       // register the account
-      const result = await apiWorker.post(`/auth/register`, {
+      const result = await apiWorker("POST", `/auth/register`, {
         username,
         name,
         email,
         password,
-      });
+      }).then((res) => res.json());
 
-      if (result.data?.error) {
-        return reject(result.data);
+      if (result?.error) {
+        return reject(result);
       }
 
       resolve({ message: "Registration successful" });
@@ -261,8 +263,7 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         return reject(currentSession.error);
       }
 
-      // validate the session
-      console.log(currentSession);
+      // console.log(currentSession);
 
       // if there is no session, return null
       if (!currentSession) {
@@ -271,13 +272,13 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
 
       // has a session, validate it
       try {
-        const sessionValidateRequest = await apiWorker.post(
+        const sessionValidate: ISession & IError = await apiWorker(
+          "POST",
           `/auth/sessions/validate`,
           {
             token: currentSession.token,
           }
-        );
-        const sessionValidate: ISession & IError = sessionValidateRequest.data;
+        ).then((res) => res.json());
 
         // check if there is an error
         if (sessionValidate.error) {
@@ -285,8 +286,10 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         }
 
         // get current account
-        const accountRequest = await apiWorker.get(`/auth/accounts/@me`);
-        const account: IAccount & IError = accountRequest.data;
+        const account: IAccount & IError = await apiWorker(
+          "GET",
+          `/auth/accounts/@me`
+        ).then((res) => res.json());
 
         // check if there is an error
         if (account.error) {
@@ -319,8 +322,9 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   dispatchSessionGetAll: async () => {
     return new Promise(async (resolve, reject) => {
       try {
-        const sessionsRequest = await apiWorker.get(`/auth/sessions`);
-        const sessions = sessionsRequest.data;
+        const sessions = await apiWorker("GET", `/auth/sessions`).then((res) =>
+          res.json()
+        );
 
         resolve(sessions);
       } catch (e) {
@@ -333,15 +337,13 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   },
 
   // + Handle session refresh
-  dispatchSessionRefresh: async () => {
+  dispatchSessionRefresh: async (currentSession: ISession & IError) => {
     return new Promise(async (resolve, reject) => {
       const DEBUG = false;
 
-      // get the current session from cookie
-      const currentSessionRequest = await selfApiWorker.post(
-        `/api/auth/session`
-      );
-      const currentSession: ISession & IError = currentSessionRequest.data;
+      if (!currentSession) {
+        return reject({ error: { message: "Unable to refresh session" } });
+      }
 
       // check if there is an error
       if (currentSession.error) {
@@ -364,15 +366,14 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         try {
           DEBUG && alert("Token expired, refreshing session...");
 
-          const refreshedSessionRequest = await apiWorker.post(
+          const refreshedSession = await apiWorker(
+            "POST",
             `/auth/sessions/refresh`,
             {
               token: currentSession.token,
               refreshToken: currentSession.refreshToken,
             }
-          );
-
-          const refreshedSession = refreshedSessionRequest.data;
+          ).then((res) => res.json());
 
           DEBUG &&
             alert("Session refreshed" + JSON.stringify(refreshedSession));
@@ -447,7 +448,7 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         }
         // else just remove the session from the server
         else {
-          await apiWorker.delete(`/auth/sessions/${sessionToken}`);
+          await apiWorker("DELETE", `/auth/sessions/${sessionToken}`);
           console.log("Removed session");
         }
 
@@ -471,7 +472,7 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   dispatchSessionRemoveAll: async () => {
     return new Promise(async (resolve, reject) => {
       try {
-        await apiWorker.delete(`/auth/sessions`);
+        await apiWorker("DELETE", `/auth/sessions`);
         console.log("Removed all sessions");
 
         // logout the user
@@ -495,11 +496,13 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   dispatchAccountUpdate: async (accountId: string, accountData: IAccount) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const accountRequest = await apiWorker.put(
+        const updatedAccount = await apiWorker(
+          "PUT",
           `/auth/accounts/${accountId}`,
           accountData
-        );
-        const updatedAccount = accountRequest.data;
+        ).then((res) => res.json());
+
+        // TODO: handle errors
 
         // update the account in the store
         set((state) => ({

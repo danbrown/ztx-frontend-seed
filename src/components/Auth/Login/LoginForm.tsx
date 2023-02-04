@@ -20,10 +20,12 @@ import { useRef, useState } from "react";
 import { featureControl } from "@config/features";
 import { SyncOutlined } from "@ant-design/icons";
 import { useRecaptcha } from "@components/Recaptcha/RecaptchaProvider";
+import { useWindow } from "@hooks/useWindow";
 
 export const LoginForm = () => {
   const theme = useTheme();
   const router = useRouter();
+  const window = useWindow();
 
   const { authenticated, session, dispatchLogin } = useZustandStore("auth");
 
@@ -49,17 +51,28 @@ export const LoginForm = () => {
   };
   // end fields
 
-  const handleLogin = ({ identifier, password }) => {
-    dispatchLogin({ identifier, password }).then((response) => {
-      console.log(response);
+  const handleLogin = async ({ identifier, password }, { setSubmitting }) => {
+    const userAgent = window.navigator.userAgent;
 
-      // if 'to' param exists, redirect to it, otherwise redirect to main page
-      router.push(
-        (router?.query?.to as string)
-          ? (router?.query?.to as string)
-          : serviceLinks.main
-      );
-    });
+    const { valid } = await handleRecaptcha();
+
+    if (!valid) {
+      alert("Recaptcha failed"); // TODO: replace with proper error handling
+
+      setSubmitting(false);
+      return;
+    } else {
+      dispatchLogin({ identifier, password, userAgent }).then((response) => {
+        console.log(response);
+
+        // if 'to' param exists, redirect to it, otherwise redirect to main page
+        router.push(
+          (router?.query?.to as string)
+            ? (router?.query?.to as string)
+            : serviceLinks.main
+        );
+      });
+    }
   };
 
   return (
