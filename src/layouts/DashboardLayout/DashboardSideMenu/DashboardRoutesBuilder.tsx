@@ -7,7 +7,7 @@ import { replaceSlug } from "@utils/replaceSlug";
 
 export const DashboardRoutesBuilder = ({ routes }) => {
   const router = useRouter();
-  const projectSlug = router.query.projectSlug as string;
+  const appSlug = router.query.appSlug as string;
 
   return (
     <>
@@ -20,7 +20,7 @@ export const DashboardRoutesBuilder = ({ routes }) => {
                 label={item.label}
                 link={replaceSlug(
                   item.link.split(window.location.host)[1] || item.link,
-                  projectSlug
+                  appSlug
                 )}
                 icon={item.icon}
                 items={item.items.map((subItem: any) => {
@@ -29,23 +29,23 @@ export const DashboardRoutesBuilder = ({ routes }) => {
                     link: replaceSlug(
                       subItem.link.split(window.location.host)[1] ||
                         subItem.link,
-                      projectSlug
+                      appSlug
                     ),
                   };
                 })}
-                current={replaceSlug(router.route, projectSlug)}
+                current={replaceSlug(router.route, appSlug)}
               />
             ) : (
               <>
                 <MenuItem
                   label={item.label}
-                  link={replaceSlug(item.link, projectSlug)}
+                  link={replaceSlug(item.link, appSlug)}
                   icon={item.icon}
                   active={
-                    replaceSlug(router.route, projectSlug) ===
+                    replaceSlug(router.route, appSlug) ===
                     replaceSlug(
                       item.link.split(window.location.host)[1] || item.link,
-                      projectSlug
+                      appSlug
                     )
                   }
                   external={!!item.external}

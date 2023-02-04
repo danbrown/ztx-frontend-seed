@@ -14,20 +14,43 @@ import { DashboardHeader } from "./DashboardHeader";
 import { DashboardSideMenu } from "./DashboardSideMenu";
 import LoadingScreen from "@components/LoadingScreen";
 import { AuthProvider } from "@providers/AuthProvider";
+import { useRouter } from "next/router";
+import { useZustandStore } from "@zustand/ZustandStoreProvider";
 
 export type DashboardLayoutProps = PageProps & {
   meta?: HeadProps;
   boxProps?: Omit<BoxProps, "ref">;
   children: React.ReactNode;
+  type: "ACCOUNT" | "APP";
 };
 
 export function DashboardLayout({
   meta,
   children,
   boxProps,
+  type,
   ...otherProps
 }: DashboardLayoutProps) {
-  const [isLoading, setIsLoading] = useState(false); // TODO: laoding the current app
+  const DEBUG = false;
+
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false); // TODO: loading the current app
+
+  const { currentApp, dispatchAppsGetCurrent } = useZustandStore("apps");
+
+  const { appSlug } = router.query;
+
+  useEffect(() => {
+    if (appSlug) {
+      setIsLoading(true);
+      dispatchAppsGetCurrent(appSlug as string).then((response) => {
+        setIsLoading(false);
+      });
+    }
+  }, [appSlug]);
+
+  if (isLoading && type === "APP")
+    return <LoadingScreen backgroundColor="shade" />;
 
   return (
     <AuthProvider>
@@ -43,7 +66,7 @@ export function DashboardLayout({
               }}
             >
               <Hidden xs={true} md={false} style={{ height: "100%" }}>
-                <DashboardSideMenu handleChange={null} />
+                <DashboardSideMenu type={type} handleChange={null} />
               </Hidden>
             </Fixed>
           </Grid>
@@ -63,13 +86,19 @@ export function DashboardLayout({
               }}
               fullWidth
             >
-              <DashboardHeader />
+              <DashboardHeader type={type} />
 
               <Flex p={2} direction="column" fullWidth {...boxProps}>
                 {isLoading ? (
                   <LoadingScreen backgroundColor="shade" />
                 ) : (
                   children
+                )}
+
+                {DEBUG && (
+                  <code>
+                    <pre>{JSON.stringify(currentApp, null, 2)}</pre>
+                  </code>
                 )}
               </Flex>
             </Flex>

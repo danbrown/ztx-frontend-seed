@@ -15,45 +15,50 @@ import { DashboardLayout } from "@layouts/DashboardLayout/DashboardLayout";
 import { serviceLinks } from "@config/links";
 import { NextLink } from "@components/NextLink";
 import { AppItemCard } from "@components/Apps/AppItemCard";
+import { SlugNextLink } from "@components/SlugNextLink";
+import { CredentialItemCard } from "@components/Apps/CredentialItemCard";
 
 export default function Home(props) {
   const theme = useTheme();
 
-  const pageTitle = "All Apps";
+  const pageTitle = "Credentials";
 
-  const { dispatchAppsGetAll } = useZustandStore("apps");
+  const { currentApp, dispatchAppCredentialsGetAll } = useZustandStore("apps");
 
-  const [apps, setApps] = useState([]);
-  const [isLoadingApps, setIsLoadingApps] = useState(false);
+  const [credentials, setCredentials] = useState([]);
+  const [isLoadingCredentials, setIsLoadingCredentials] = useState(false);
 
-  const handleGetApps = async () => {
-    setIsLoadingApps(true);
-    await dispatchAppsGetAll().then((response) => {
-      setApps(response);
-      setIsLoadingApps(false);
+  const handleGetCredentials = async () => {
+    setIsLoadingCredentials(true);
+    await dispatchAppCredentialsGetAll(currentApp.id).then((response) => {
+      setCredentials(response);
+      setIsLoadingCredentials(false);
     });
   };
-  // start by loading apps
+  // start by loading credentials, after currentApp is set
   useEffect(() => {
-    handleGetApps();
-  }, []);
+    if (currentApp) {
+      handleGetCredentials();
+    }
+  }, [currentApp]);
 
   return (
     <DashboardLayout
-      type="ACCOUNT"
+      type="APP"
       meta={{
         title: pageTitle,
       }}
     >
       <Breadcrumbs
+        linkComponent={SlugNextLink}
         items={[
           {
-            label: "Dashboard",
-            href: `${serviceLinks.accountDashboard}`,
+            label: "App Dashboard",
+            href: `${serviceLinks.appDashboard}`,
           },
           {
             label: pageTitle,
-            href: `${serviceLinks.accountDashboard}/apps`,
+            href: `${serviceLinks.appDashboard}/credentials`,
             inactive: true,
           },
         ]}
@@ -62,31 +67,31 @@ export default function Home(props) {
       <Flex align="center" justify="between" direction="row" fullWidth>
         <Typography variant="h1">{pageTitle}</Typography>
 
-        <NextLink href={`${serviceLinks.accountDashboard}/apps/new`}>
+        <SlugNextLink href={`${serviceLinks.appDashboard}/credentials/new`}>
           <Button variant="contained" backgroundColor="primary">
-            Create App
+            New Credential
           </Button>
-        </NextLink>
+        </SlugNextLink>
       </Flex>
       <Spacing height={4} />
 
-      {/* Apps List */}
+      {/* Credentials List */}
       <Grid container spacing={2}>
-        {apps.map((thisApp) => (
-          <Grid item xs={12} sm={6} md={4} key={thisApp.id}>
-            <AppItemCard appData={thisApp} />
+        {credentials.map((thisCredential) => (
+          <Grid item xs={12} sm={6} md={4} key={thisCredential.id}>
+            <CredentialItemCard credentialData={thisCredential} />
           </Grid>
         ))}
       </Grid>
 
-      {apps.length === 0 && !isLoadingApps && (
+      {credentials.length === 0 && !isLoadingCredentials && (
         <Flex fullWidth align="center" justify="center" mt={2}>
-          <Typography variant="h3">No apps available.</Typography>
+          <Typography variant="h3">No credentials available.</Typography>
         </Flex>
       )}
 
       {/* LLoading */}
-      {isLoadingApps && (
+      {isLoadingCredentials && (
         <Flex fullWidth align="center" justify="center" mt={2}>
           <Loading type="dots" />
         </Flex>

@@ -13,50 +13,54 @@ import { DashboardLayout } from "@layouts/DashboardLayout/DashboardLayout";
 import { serviceLinks } from "@config/links";
 import { useRouter } from "next/router";
 import { EditAppForm } from "@components/Apps/EditAppForm";
+import { EditCredentialForm } from "@components/Apps/EditCredentialForm";
+import { SlugNextLink } from "@components/SlugNextLink";
 
 export default function Home(props) {
   const theme = useTheme();
   const router = useRouter();
-  const { id: appId } = router.query;
+  const { id: credentialId } = router.query;
 
-  const pageTitle = appId ? `Edit App` : `New App`;
+  const pageTitle = credentialId ? `Edit Credential` : `New Credential`;
 
-  const { dispatchAppsGetSingle } = useZustandStore("apps");
+  const { currentApp, dispatchAppCredentialsGetSingle } =
+    useZustandStore("apps");
 
-  const [appData, setAppData] = useState(null);
+  const [credentialData, setCredentialData] = useState(null);
 
   useEffect(() => {
-    if (appId) {
-      dispatchAppsGetSingle(appId as string)
+    if (currentApp && credentialId) {
+      dispatchAppCredentialsGetSingle(currentApp.id, credentialId as string)
         .then((res) => {
-          setAppData(res);
+          setCredentialData(res);
         })
         .catch((err) => {
           console.error(err);
         });
     }
-  }, [appId]);
+  }, [currentApp, credentialId]);
 
   return (
     <DashboardLayout
-      type="ACCOUNT"
+      type="APP"
       meta={{
         title: pageTitle,
       }}
     >
       <Breadcrumbs
+        linkComponent={SlugNextLink}
         items={[
           {
-            label: "Dashboard",
-            href: `${serviceLinks.accountDashboard}`,
+            label: "App Dashboard",
+            href: `${serviceLinks.appDashboard}`,
           },
           {
-            label: "All Apps",
-            href: `${serviceLinks.accountDashboard}/apps`,
+            label: "Credentials",
+            href: `${serviceLinks.appDashboard}/credentials`,
           },
           {
             label: pageTitle,
-            href: `${serviceLinks.accountDashboard}/apps/new`,
+            href: `${serviceLinks.appDashboard}/credentials/new`,
             inactive: true,
           },
         ]}
@@ -68,7 +72,7 @@ export default function Home(props) {
       <Spacing height={4} />
 
       {/* Form */}
-      <EditAppForm initialData={appData} />
+      <EditCredentialForm initialData={credentialData} />
     </DashboardLayout>
   );
 }

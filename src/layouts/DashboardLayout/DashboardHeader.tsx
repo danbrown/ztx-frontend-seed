@@ -14,7 +14,7 @@ import { DashboardMobileSidebar } from "./DashboardMobileSidebar";
 import { Config } from "@layouts/common/Config";
 import ThemeSwitch from "@layouts/common/ThemeSwitch";
 
-export const DashboardHeader = () => {
+export const DashboardHeader = ({ type }) => {
   const theme = useTheme();
   const width = useWidth(2000);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -79,6 +79,7 @@ export const DashboardHeader = () => {
       </Fixed>
 
       <DashboardMobileSidebar
+        type={type}
         visible={mobileSidebarVisible}
         handleChange={handleMobileSidebar}
       />

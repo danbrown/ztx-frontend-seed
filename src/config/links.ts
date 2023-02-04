@@ -17,4 +17,5 @@ export const serviceLinks = {
 
   dashboard: `${process.env.NEXT_PUBLIC_MAIN_SERVICE}/dashboard`,
   accountDashboard: `${process.env.NEXT_PUBLIC_MAIN_SERVICE}/dashboard/@me`,
+  appDashboard: `${process.env.NEXT_PUBLIC_MAIN_SERVICE}/dashboard/[appSlug]`,
 };

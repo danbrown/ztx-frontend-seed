@@ -48,6 +48,7 @@ export default function Home(props) {
 
   return (
     <DashboardLayout
+      type="ACCOUNT"
       meta={{
         title: pageTitle,
       }}

@@ -19,7 +19,12 @@ export default function Home(props) {
   }, []);
 
   return (
-    <DashboardLayout>
+    <DashboardLayout
+      type="ACCOUNT"
+      meta={{
+        title: "Dashboard",
+      }}
+    >
       <div
         style={{
           width: "100%",

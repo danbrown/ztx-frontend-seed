@@ -15,8 +15,9 @@ import { DashboardRoutesBuilder } from "./DashboardRoutesBuilder";
 import { ACCOUNT_DASHBOARD_ROUTES } from "@routes/accountDashboardRoutes";
 import { useState } from "react";
 import { ZetahexAppLogo } from "@components/ZetahexAppLogo";
+import { APP_DASHBOARD_ROUTES } from "@routes/appDashboardRoutes";
 
-export const DashboardSideMenu = ({ handleChange }) => {
+export const DashboardSideMenu = ({ type, handleChange }) => {
   const theme = useTheme();
 
   const [listing, setListing] = useState<"APPS" | "CURRENT">("CURRENT");
@@ -80,7 +81,11 @@ export const DashboardSideMenu = ({ handleChange }) => {
       </Box>
 
       {listing === "CURRENT" && (
-        <DashboardRoutesBuilder routes={ACCOUNT_DASHBOARD_ROUTES} />
+        <DashboardRoutesBuilder
+          routes={
+            type === "ACCOUNT" ? ACCOUNT_DASHBOARD_ROUTES : APP_DASHBOARD_ROUTES
+          }
+        />
       )}
     </Container>
   );

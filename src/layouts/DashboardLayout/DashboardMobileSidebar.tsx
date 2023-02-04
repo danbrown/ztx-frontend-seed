@@ -1,7 +1,7 @@
 import { Flex, Fixed, Snackbar } from "@wipsie/ui";
 import { DashboardSideMenu } from "./DashboardSideMenu";
 
-export const DashboardMobileSidebar = ({ visible, handleChange }) => {
+export const DashboardMobileSidebar = ({ type, visible, handleChange }) => {
   return (
     <Snackbar
       id="sidebar"
@@ -36,7 +36,7 @@ export const DashboardMobileSidebar = ({ visible, handleChange }) => {
             zIndex: 200,
           }}
         >
-          <DashboardSideMenu handleChange={handleChange} />
+          <DashboardSideMenu type={type} handleChange={handleChange} />
         </Fixed>
       </Flex>
     </Snackbar>

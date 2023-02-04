@@ -47,11 +47,31 @@ export interface IAppUpdateParams {
   homepageUrl?: string;
 }
 
-export interface IAppCredential {}
+export interface IAppCredential {
+  id: string;
+  tenantAppId: string;
 
-export interface IAppCredentialCreateParams {}
+  name: string;
+  redirectUri: string;
+  scopes: string[];
 
-export interface IAppCredentialUpdateParams {}
+  clientId: string;
+  clientSecret?: string;
+
+  createdAt: string;
+}
+
+export interface IAppCredentialCreateParams {
+  name: string;
+  redirectUri: string;
+  scopes: string[];
+}
+
+export interface IAppCredentialUpdateParams {
+  name?: string;
+  redirectUri?: string;
+  scopes?: string[];
+}
 
 // Slice
 export interface SliceType {
@@ -71,29 +91,29 @@ export interface SliceType {
   ) => Promise<IApp>;
   dispatchAppsDelete: (appId: string) => Promise<IApp>;
 
-  // // credentials
-  // dispatchGetAppCredentials: (appId: string) => Promise<IAppCredential[]>;
-  // dispatchGetAppCredential: (
-  //   appId: string,
-  //   credentialId: string
-  // ) => Promise<IAppCredential>;
-  // dispatchGetAppCredentialSecret: (
-  //   appId: string,
-  //   credentialId: string
-  // ) => Promise<IAppCredential>;
-  // dispatchAppsCreateCredential: (
-  //   appId: string,
-  //   createAppCredentialParams: IAppCredentialCreateParams
-  // ) => Promise<IAppCredential>;
-  // dispatchAppsUpdateCredential: (
-  //   appId: string,
-  //   credentialId: string,
-  //   updateAppCredentialParams: IAppCredentialUpdateParams
-  // ) => Promise<IAppCredential>;
-  // dispatchAppsDeleteCredential: (
-  //   appId: string,
-  //   credentialId: string
-  // ) => Promise<IAppCredential>;
+  // credentials
+  dispatchAppCredentialsGetAll: (appId: string) => Promise<IAppCredential[]>;
+  dispatchAppCredentialsGetSingle: (
+    appId: string,
+    credentialId: string
+  ) => Promise<IAppCredential>;
+  dispatchAppCredentialsGetSecret: (
+    appId: string,
+    credentialId: string
+  ) => Promise<IAppCredential>;
+  dispatchAppCredentialsCreate: (
+    appId: string,
+    createAppCredentialParams: IAppCredentialCreateParams
+  ) => Promise<IAppCredential>;
+  dispatchAppCredentialsUpdate: (
+    appId: string,
+    credentialId: string,
+    updateAppCredentialParams: IAppCredentialUpdateParams
+  ) => Promise<IAppCredential>;
+  dispatchAppCredentialsDelete: (
+    appId: string,
+    credentialId: string
+  ) => Promise<IAppCredential>;
 }
 
 export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
@@ -150,10 +170,10 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
     });
   },
 
-  dispatchAppsGetCurrent: async (appId: string) => {
+  dispatchAppsGetCurrent: async (appSlug: string) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const { data } = await apiWorker.get(`/apps/${appId}`);
+        const { data } = await apiWorker.get(`/apps/${appSlug}`);
 
         set({ currentApp: data as IApp });
 
@@ -221,4 +241,110 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
       }
     });
   },
+
+  // @ CREDENTIALS
+  dispatchAppCredentialsGetAll: async (appId: string) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data } = await apiWorker.get(`/apps/${appId}/credentials`);
+        resolve(data as IAppCredential[]);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  },
+
+  dispatchAppCredentialsGetSingle: async (
+    appId: string,
+    credentialId: string
+  ) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data } = await apiWorker.get(
+          `/apps/${appId}/credentials/${credentialId}`
+        );
+        resolve(data as IAppCredential);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  },
+
+  dispatchAppCredentialsGetSecret: async (
+    appId: string,
+    credentialId: string
+  ) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data } = await apiWorker.get(
+          `/apps/${appId}/credentials/${credentialId}/secret`
+        );
+        resolve(data as IAppCredential);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  },
+
+  dispatchAppCredentialsCreate: async (
+    appId: string,
+    { name, redirectUri, scopes }: IAppCredentialCreateParams
+  ) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data } = await apiWorker.post(`/apps/${appId}/credentials`, {
+          name,
+          redirectUri,
+          scopes,
+        });
+        resolve(data as IAppCredential);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  },
+
+  dispatchAppCredentialsUpdate: async (
+    appId: string,
+    credentialId: string,
+    { name, redirectUri, scopes }: IAppCredentialUpdateParams
+  ) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data } = await apiWorker.put(
+          `/apps/${appId}/credentials/${credentialId}`,
+          {
+            name,
+            redirectUri,
+            scopes,
+          }
+        );
+        resolve(data as IAppCredential);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  },
+
+  dispatchAppCredentialsDelete: async (
+    appId: string,
+    credentialId: string
+  ) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { data } = await apiWorker.delete(
+          `/apps/${appId}/credentials/${credentialId}`
+        );
+        resolve(data as IAppCredential);
+      } catch (error) {
+        console.log(error);
+        reject(error);
+      }
+    });
+  }
 });

@@ -6,10 +6,10 @@ import { useZustandStore } from "@zustand/ZustandStoreProvider";
 import { Formik } from "formik";
 import * as yup from "yup";
 
-export const EditAccountForm = ({ initialAccount = null }) => {
+export const EditAccountForm = ({ initialData = null }) => {
   const { account, dispatchAccountUpdate } = useZustandStore("auth");
 
-  const initialValues: IAccount = initialAccount ? initialAccount : account;
+  const initialValues: IAccount = initialData ? initialData : account;
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("Name is required"),
