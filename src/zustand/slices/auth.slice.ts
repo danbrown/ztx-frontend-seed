@@ -262,36 +262,56 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
       }
 
       // validate the session
-      const sessionValidateRequest = await apiWorker.post(
-        `/auth/sessions/validate`,
-        {
-          token: currentSession.token,
+      console.log(currentSession);
+
+      // if there is no session, return null
+      if (!currentSession) {
+        return resolve(null);
+      }
+
+      // has a session, validate it
+      try {
+        const sessionValidateRequest = await apiWorker.post(
+          `/auth/sessions/validate`,
+          {
+            token: currentSession.token,
+          }
+        );
+        const sessionValidate: ISession & IError = sessionValidateRequest.data;
+
+        // check if there is an error
+        if (sessionValidate.error) {
+          return reject(sessionValidate.error);
         }
-      );
-      const sessionValidate: ISession & IError = sessionValidateRequest.data;
 
-      // check if there is an error
-      if (sessionValidate.error) {
-        return reject(sessionValidate.error);
+        // get current account
+        const accountRequest = await apiWorker.get(`/auth/accounts/@me`);
+        const account: IAccount & IError = accountRequest.data;
+
+        // check if there is an error
+        if (account.error) {
+          return reject(account.error);
+        }
+
+        // set the session in the store
+        set((state) => ({
+          authenticated: true,
+          account,
+          session: currentSession,
+        }));
+
+        resolve(currentSession);
+      } catch (e) {
+        console.log(e);
+
+        set((state) => ({
+          authenticated: false,
+          account: null,
+          session: null,
+        }));
+
+        resolve(null);
       }
-
-      // get current account
-      const accountRequest = await apiWorker.get(`/auth/accounts/@me`);
-      const account: IAccount & IError = accountRequest.data;
-
-      // check if there is an error
-      if (account.error) {
-        return reject(account.error);
-      }
-
-      // set the session in the store
-      set((state) => ({
-        authenticated: true,
-        account,
-        session: currentSession,
-      }));
-
-      resolve(currentSession);
     });
   },
 
