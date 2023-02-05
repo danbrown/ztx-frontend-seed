@@ -159,10 +159,15 @@ export default function Home(props) {
                     disabled={isRemovingSession || isLoadingSessions}
                     onClick={() => {
                       setIsRemovingSession(true);
-                      dispatchSessionRemove(thisSession.token).then(() => {
-                        setIsRemovingSession(false);
-                        handleGetSessions();
-                      });
+                      dispatchSessionRemove(thisSession.token)
+                        .then(() => {
+                          setIsRemovingSession(false);
+                          handleGetSessions();
+                        })
+                        .catch(() => {
+                          // TODO: toaster error
+                          setIsRemovingSession(false);
+                        });
                     }}
                   >
                     Logout Session

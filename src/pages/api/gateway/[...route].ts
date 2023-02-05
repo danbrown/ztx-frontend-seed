@@ -1,5 +1,6 @@
-import { zustandStore } from "@zustand/ZustandStoreProvider";
 import { NextApiRequest, NextApiResponse } from "next";
+
+type RestHttpMethods = "GET" | "POST" | "PUT" | "DELETE";
 
 export default async function customRouter(
   req: NextApiRequest,
@@ -11,45 +12,42 @@ export default async function customRouter(
     const route = req.query.route as string[];
     const routePath = "/" + route.join("/");
 
-    const method = req.method.toLowerCase() as
-      | "get"
-      | "post"
-      | "put"
-      | "delete";
-
-    // current session cookie
-    let session = req.cookies?.[process.env.NEXT_PUBLIC_COOKIE_DOMAIN_NAME]
-      ? JSON.parse(req.cookies?.[process.env.NEXT_PUBLIC_COOKIE_DOMAIN_NAME])
-      : null;
+    const method = req.method.toUpperCase() as RestHttpMethods;
 
     // Headers setup
     let headers: any = {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
+      // If the content type is not set, then default to application/json
+      "Content-Type": req.headers["content-type"] || "application/json",
+      "Access-Control-Allow-Origin":
+        req.headers["access-control-allow-origin"] || "*",
 
       // The api gateway requires a client id and secret to be sent in the header
       "Proxy-Authorization": `Basic ${Buffer.from(
         `${process.env.API_GATEWAY_CLIENT_ID}:${process.env.API_GATEWAY_CLIENT_SECRET}`
       ).toString("base64")}`,
+      token: req?.headers?.token || undefined,
     };
 
-    // + TOKEN REFRESH INTERCEPTOR
-    headers = await refreshInterceptor({
-      routePath,
-      headers,
-      session,
-    });
+    // Compile the body
+    const filteredBody =
+      // If the method is GET, then there is no body
+      method === "GET"
+        ? undefined
+        : // If the body is not null, undefined, or empty string, then stringify it
+        req.body !== null && req.body !== undefined && req.body !== ""
+        ? typeof req.body === "object"
+          ? JSON.stringify(req.body)
+          : // If the body is a string, then just use it
+          typeof req.body === "string"
+          ? req.body
+          : undefined
+        : undefined;
 
     // + FETCH THE API GATEWAY
     fetch(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}${routePath}`, {
       method: method,
       headers: headers,
-      body:
-        method === "get"
-          ? undefined
-          : req.body !== null
-          ? JSON.stringify(req.body)
-          : undefined,
+      body: filteredBody,
     })
       .then(async (response) => {
         // console.log("Response: ", response);
@@ -71,76 +69,3 @@ export default async function customRouter(
       });
   });
 }
-
-// + TOKEN REFRESH INTERCEPTOR
-const refreshInterceptor = async ({ routePath, headers, session }) => {
-  return new Promise(async (resolve, reject) => {
-    const DEBUG = false; // true to enable console logs
-
-    const authorizationHeaderName = "token";
-
-    if (!session) {
-      DEBUG && console.log("No session, skipping");
-
-      // & RETURN THE HEADERS CONFIG
-      return resolve(headers);
-    }
-
-    let headersCombo = {
-      [authorizationHeaderName]: `Bearer ${session?.accessToken}`,
-      ...headers,
-    };
-
-    DEBUG && console.log("Intercepting request: " + routePath);
-
-    try {
-      // get the token from the store, and the refresh and logout functions
-      const { dispatchSessionRefresh, dispatchLogout } =
-        zustandStore.getState();
-
-      // & TRY TO REFRESH THE TOKEN
-      // ignore the refresh call if it's a refresh call and there is no error
-      if (routePath?.includes("refresh") === false) {
-        const refreshedSession = await dispatchSessionRefresh(session);
-
-        if (refreshedSession.error) {
-          // if there is an error, log out
-          DEBUG && console.log(refreshedSession.error);
-          DEBUG &&
-            console.log(
-              "There is an error, or skipping" +
-                JSON.stringify(refreshedSession.error)
-            );
-
-          // & LOGOUT
-          await dispatchLogout();
-          // return reject(refreshedSession.error);
-
-          // & RETURN THE HEADERS CONFIG
-          return resolve(headers);
-        }
-
-        // if the token is not expired, just add the current session accessToken in the header
-        headersCombo = {
-          [authorizationHeaderName]: `Bearer ${refreshedSession?.accessToken}`,
-          ...headers,
-        };
-
-        // & RETURN THE HEADERS CONFIG
-        return resolve(headersCombo);
-      } else {
-        // if there is an error, log out
-        DEBUG && console.log("Is a refresh call, skipping");
-
-        // & RETURN THE HEADERS CONFIG
-        return resolve(headersCombo);
-      }
-    } catch (error) {
-      // if there is an error, log out
-      DEBUG && console.log(error);
-
-      // & RETURN THE HEADERS CONFIG
-      return resolve(headers);
-    }
-  });
-};

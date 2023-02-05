@@ -1,7 +1,7 @@
 import { OmittedFunctionKeys } from "@customTypes/OmittedFunctionKeys.type";
 import { ZustandStoreState } from "@zustand/ZustandStoreProvider";
 import { StateCreator } from "zustand";
-import { apiWorker, selfApiWorker } from "@utils/apiWorker";
+import apiWorker, { selfApiWorker } from "@utils/apiWorker";
 
 // Zustand
 export const sliceName = "apps";
@@ -11,6 +11,7 @@ export const initialState: OmittedFunctionKeys<SliceType> = {
 };
 
 // Interfaces
+
 export interface IApp {
   id: string;
   name: string;
@@ -123,11 +124,8 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   dispatchGetAvailableScopes: async () => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data: string[] = await apiWorker("GET", "/apps/scopes").then(
-          (res) => res.json()
-        );
-
-        resolve(data);
+        const { data } = await apiWorker.get("/apps/scopes");
+        resolve(data as string[]);
       } catch (error) {
         console.log(error);
         reject(error);
@@ -139,11 +137,8 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   dispatchAppsGetPublic: async (appId: string) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data: IApp = await apiWorker("GET", `/apps/public/${appId}`).then(
-          (res) => res.json()
-        );
-
-        resolve(data);
+        const { data } = await selfApiWorker.get(`/apps/public/${appId}`);
+        resolve(data as IApp);
       } catch (error) {
         console.log(error);
         reject(error);
@@ -154,11 +149,8 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   dispatchAppsGetAll: async () => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data: IApp[] = await apiWorker("GET", "/apps").then((res) =>
-          res.json()
-        );
-
-        resolve(data);
+        const { data } = await apiWorker.get("/apps");
+        resolve(data as IApp[]);
       } catch (error) {
         console.log(error);
         reject(error);
@@ -169,11 +161,8 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   dispatchAppsGetSingle: async (appId: string) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data: IApp = await apiWorker("GET", `/apps/${appId}`).then(
-          (res) => res.json()
-        );
-
-        resolve(data);
+        const { data } = await selfApiWorker.get(`/apps/${appId}`);
+        resolve(data as IApp);
       } catch (error) {
         console.log(error);
         reject(error);
@@ -184,9 +173,7 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   dispatchAppsGetCurrent: async (appSlug: string) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data: IApp = await apiWorker("GET", `/apps/${appSlug}`).then(
-          (res) => res.json()
-        );
+        const { data } = await apiWorker.get(`/apps/${appSlug}`);
 
         set({ currentApp: data as IApp });
 
@@ -207,15 +194,14 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   }: IAppCreateParams) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data: IApp = await apiWorker("POST", "/apps", {
+        const { data } = await apiWorker.post("/apps", {
           name,
           slug,
           description,
           avatar,
           homepageUrl,
-        }).then((res) => res.json());
-
-        resolve(data);
+        });
+        resolve(data as IApp);
       } catch (error) {
         console.log(error);
         reject(error);
@@ -229,15 +215,14 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   ) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data: IApp = await apiWorker("PUT", `/apps/${appId}`, {
+        const { data } = await apiWorker.put(`/apps/${appId}`, {
           name,
           slug,
           description,
           avatar,
           homepageUrl,
-        }).then((res) => res.json());
-
-        resolve(data);
+        });
+        resolve(data as IApp);
       } catch (error) {
         console.log(error);
         reject(error);
@@ -248,11 +233,8 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   dispatchAppsDelete: async (appId: string) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data: IApp = await apiWorker("DELETE", `/apps/${appId}`).then(
-          (res) => res.json()
-        );
-
-        resolve(data);
+        const { data } = await apiWorker.delete(`/apps/${appId}`);
+        resolve(data as IApp);
       } catch (error) {
         console.log(error);
         reject(error);
@@ -264,12 +246,8 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   dispatchAppCredentialsGetAll: async (appId: string) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data: IAppCredential[] = await apiWorker(
-          "GET",
-          `/apps/${appId}/credentials`
-        ).then((res) => res.json());
-
-        resolve(data);
+        const { data } = await apiWorker.get(`/apps/${appId}/credentials`);
+        resolve(data as IAppCredential[]);
       } catch (error) {
         console.log(error);
         reject(error);
@@ -283,12 +261,10 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   ) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data: IAppCredential = await apiWorker(
-          "GET",
+        const { data } = await apiWorker.get(
           `/apps/${appId}/credentials/${credentialId}`
-        ).then((res) => res.json());
-
-        resolve(data);
+        );
+        resolve(data as IAppCredential);
       } catch (error) {
         console.log(error);
         reject(error);
@@ -302,12 +278,10 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   ) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data: IAppCredential = await apiWorker(
-          "GET",
+        const { data } = await apiWorker.get(
           `/apps/${appId}/credentials/${credentialId}/secret`
-        ).then((res) => res.json());
-
-        resolve(data);
+        );
+        resolve(data as IAppCredential);
       } catch (error) {
         console.log(error);
         reject(error);
@@ -321,17 +295,12 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   ) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data: IAppCredential = await apiWorker(
-          "POST",
-          `/apps/${appId}/credentials`,
-          {
-            name,
-            redirectUri,
-            scopes,
-          }
-        ).then((res) => res.json());
-
-        resolve(data);
+        const { data } = await apiWorker.post(`/apps/${appId}/credentials`, {
+          name,
+          redirectUri,
+          scopes,
+        });
+        resolve(data as IAppCredential);
       } catch (error) {
         console.log(error);
         reject(error);
@@ -346,17 +315,15 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   ) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data: IAppCredential = await apiWorker(
-          "PUT",
+        const { data } = await apiWorker.put(
           `/apps/${appId}/credentials/${credentialId}`,
           {
             name,
             redirectUri,
             scopes,
           }
-        ).then((res) => res.json());
-
-        resolve(data);
+        );
+        resolve(data as IAppCredential);
       } catch (error) {
         console.log(error);
         reject(error);
@@ -367,12 +334,10 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
   dispatchAppCredentialsDelete: async (appId: string, credentialId: string) => {
     return new Promise(async (resolve, reject) => {
       try {
-        const data: IAppCredential = await apiWorker(
-          "DELETE",
+        const { data } = await apiWorker.delete(
           `/apps/${appId}/credentials/${credentialId}`
-        ).then((res) => res.json());
-
-        resolve(data);
+        );
+        resolve(data as IAppCredential);
       } catch (error) {
         console.log(error);
         reject(error);
