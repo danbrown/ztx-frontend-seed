@@ -8,22 +8,24 @@ import {
 } from "@wipsie/icons";
 
 export const APP_DASHBOARD_ROUTES = [
-  /* 
-    @ GENERAL ROUTES
-  */
-  { type: "TITLE", label: "General" },
-  {
-    type: "ITEM",
-    label: "Home",
-    icon: <Home01Icon />,
-    link: `${serviceLinks.appDashboard}`,
-  },
   {
     type: "ITEM",
     label: "All Apps",
     icon: <LayersThree01Icon />,
     link: `${serviceLinks.accountDashboard}/apps`,
   },
+
+  /* 
+    @ GENERAL ROUTES
+  */
+  { type: "TITLE", label: "General" },
+  {
+    type: "ITEM",
+    label: "App Details",
+    icon: <Home01Icon />,
+    link: `${serviceLinks.appDashboard}`,
+  },
+
   {
     type: "ITEM",
     label: "Credentials",

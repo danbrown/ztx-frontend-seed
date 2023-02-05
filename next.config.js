@@ -6,7 +6,7 @@ const withPWA = require("next-pwa")({
 
 module.exports = withPWA({
   pageExtensions: ["jsx", "js", "mdx", "md", "ts", "tsx"],
-  reactStrictMode: false,
+  reactStrictMode: true,
   redirects: require("./next-redirect"),
   eslint: {
     ignoreDuringBuilds: true,

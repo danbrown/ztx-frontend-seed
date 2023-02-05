@@ -46,7 +46,7 @@ export default async function customRouter(
         : undefined;
 
     // + FETCH THE API GATEWAY
-    fetch(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}${routePath}`, {
+    fetch(`${process.env.NEXT_PUBLIC_API_GATEWAY_URL}/${routePath}`, {
       method: method,
       headers: headers,
       body: filteredBody,
