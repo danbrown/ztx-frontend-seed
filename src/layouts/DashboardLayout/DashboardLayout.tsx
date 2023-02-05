@@ -13,7 +13,7 @@ import { Head, HeadProps } from "@components/Head";
 import { DashboardHeader } from "./DashboardHeader";
 import { DashboardSideMenu } from "./DashboardSideMenu";
 import LoadingScreen from "@components/LoadingScreen";
-import { AuthProvider } from "@providers/AuthProvider";
+import { AuthProvider, withAuth } from "@providers/AuthProvider";
 import { useRouter } from "next/router";
 import { useZustandStore } from "@zustand/ZustandStoreProvider";
 

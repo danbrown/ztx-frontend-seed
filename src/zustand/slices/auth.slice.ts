@@ -271,13 +271,21 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         return resolve(null);
       }
 
+      // authorization headers options
+      const authHeaders = {
+        headers: {
+          token: `Bearer ${currentSession.accessToken}`,
+        },
+      };
+
       // has a session, validate it
       try {
         const sessionValidateRequest = await apiWorker.post(
           `/auth/sessions/validate`,
           {
             token: currentSession.token,
-          }
+          },
+          authHeaders
         );
         const sessionValidate: ISession & IError = sessionValidateRequest.data;
 
@@ -287,7 +295,12 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         }
 
         // get current account
-        const accountRequest = await apiWorker.get(`/auth/accounts/@me`);
+        const accountRequest = await apiWorker.get(
+          `/auth/accounts/@me`,
+          authHeaders
+        );
+
+        // get the account
         const account: IAccount & IError = accountRequest.data;
 
         // check if there is an error

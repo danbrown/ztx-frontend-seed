@@ -10,35 +10,28 @@ export const SessionProvider = ({ children }) => {
   const window = useWindow();
 
   const [isLoading, setIsLoading] = useState(true);
-  const {
-    loading: loadingZus,
-    dispatchSessionInit,
-    dispatchLogout,
-  } = useZustandStore("auth");
+  const { dispatchSessionInit, dispatchLogout } = useZustandStore("auth");
   const { currentLanguage } = useZustandStore("settings");
 
-  // @ Session
+  // @ Session & Loading
   useEffect(() => {
     if (window !== null) {
+      zustandStore.setState({ loading: true }); // window is set, so we can start loading
+
       dispatchSessionInit()
         .then(() => {
           zustandStore.setState({ loading: false }); // for loading state
+          setIsLoading(false);
         })
         .catch((error) => {
           console.log(error);
           dispatchLogout().then(() => {
             zustandStore.setState({ loading: false }); // for loading state
           });
+          setIsLoading(false);
         });
     }
   }, [window]);
-
-  // @ Loading
-  useEffect(() => {
-    if (loadingZus !== null) {
-      setIsLoading(loadingZus);
-    }
-  }, [loadingZus]);
 
   // @ Translations
   useSyncLanguage(currentLanguage);
