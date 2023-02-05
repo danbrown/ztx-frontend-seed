@@ -25,6 +25,8 @@ export default async function customRouter(
       "Proxy-Authorization": `Basic ${Buffer.from(
         `${process.env.API_GATEWAY_CLIENT_ID}:${process.env.API_GATEWAY_CLIENT_SECRET}`
       ).toString("base64")}`,
+
+      // get the token from the header, it can be undefined
       token: req?.headers?.token || undefined,
     };
 

@@ -356,8 +356,9 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
       // check if the session is expired
       const { exp: tokenExpDate } = decodeJwt(currentSession.accessToken);
 
-      // consider the refresh token expired it's 5 minutes before the actual expiration date
-      const tokenExpDateWithRefresh = tokenExpDate - 300; // 300 is 5 minutes in seconds
+      // consider the refresh token expired by having a toletance time span
+      const toleranceTimeSpan = 300; // 300 is 5 minutes in seconds
+      const tokenExpDateWithRefresh = tokenExpDate - toleranceTimeSpan; // 300 is 5 minutes in seconds
       const currentDate = new Date().getTime() / 1000;
 
       // if the token is expired, refresh it, refreshedSession will be already updated in the store, so we can get the new token from there
@@ -385,7 +386,7 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
                 "Unable to refresh session" + JSON.stringify(refreshedSession)
               );
 
-            return reject(refreshedSession);
+            return reject({ error: { message: "Unable to refresh session" } });
           }
 
           // set the session cookie with the new session
