@@ -3,7 +3,7 @@ import { AtSignIcon, User01Icon } from "@wipsie/icons";
 import { Button, Grid, Input, Spacing, TextArea } from "@wipsie/ui";
 import { IAccount } from "@zustand/slices/auth.slice";
 import { useZustandStore } from "@zustand/ZustandStoreProvider";
-import { Formik } from "formik";
+import { Formik, FormikProps } from "formik";
 import * as yup from "yup";
 
 export const EditAccountForm = ({ initialData = null }) => {
@@ -13,10 +13,13 @@ export const EditAccountForm = ({ initialData = null }) => {
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("Name is required"),
+
+    bio: yup.string(),
+    avatar: yup.string(),
+    cover: yup.string(),
+
     profile: yup.object().shape({
-      bio: yup.string(),
-      avatar: yup.string(),
-      cover: yup.string(),
+      content: yup.object({}),
     }),
   });
 
@@ -40,7 +43,7 @@ export const EditAccountForm = ({ initialData = null }) => {
         setSubmitting,
         isValid,
         handleBlur,
-      }) => (
+      }: FormikProps<IAccount>) => (
         <Grid container spacing={1}>
           <Grid item xs={12} md={6}>
             <Input
@@ -74,7 +77,7 @@ export const EditAccountForm = ({ initialData = null }) => {
               name="profile.bio"
               onChange={handleChange}
               onBlur={handleBlur}
-              value={values.profile.bio}
+              value={values.bio}
               error={errors.profile !== undefined}
               fullWidth
             />

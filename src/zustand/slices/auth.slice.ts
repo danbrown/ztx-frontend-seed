@@ -49,9 +49,14 @@ export interface SliceType {
 export interface IAccount {
   id: string;
   email: string;
-  name: string;
+
   username: string;
   permission: string;
+
+  name: string;
+  avatar: string;
+  bio: string;
+  cover: string;
 
   isActive: boolean;
   isVerified: boolean;
@@ -61,10 +66,8 @@ export interface IAccount {
   isDeleted: boolean;
   isAdminDeleted: boolean;
 
-  profile: {
-    avatar: string;
-    bio: string;
-    cover: string;
+  profile?: {
+    content: string;
   };
 
   createdAt: string;
@@ -116,10 +119,13 @@ export interface IRegisterParameters {
 
 export interface IEditAccountParameters {
   name: string;
-  profile: {
-    avatar: string;
-    bio: string;
-    cover: string;
+
+  avatar: string;
+  bio: string;
+  cover: string;
+
+  profile?: {
+    content: string;
   };
 }
 

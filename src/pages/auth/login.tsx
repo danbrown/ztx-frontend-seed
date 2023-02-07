@@ -13,15 +13,15 @@ export default function LoginPage(props) {
   const theme = useTheme();
   const { authenticated } = useZustandStore("auth");
 
-  useEffect(() => {
-    if (authenticated) {
-      router.push(
-        (router?.query?.to as string)
-          ? (router?.query?.to as string)
-          : serviceLinks.main
-      );
-    }
-  }, [authenticated]);
+  // useEffect(() => {
+  //   if (authenticated) {
+  //     router.push(
+  //       (router?.query?.to as string)
+  //         ? (router?.query?.to as string)
+  //         : serviceLinks.main
+  //     );
+  //   }
+  // }, [authenticated]);
 
   return (
     <AuthLayout
