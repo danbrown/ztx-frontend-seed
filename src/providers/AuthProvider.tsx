@@ -30,28 +30,3 @@ export const AuthProvider = ({ children }) => {
     return children;
   }
 };
-
-export const withAuth = (Component: React.FC<any>, props = {}) => {
-  const AuthenticatedComponent = () => {
-    const router = useRouter();
-
-    const [isLoading, setIsLoading] = useState(true);
-    const { authenticated, loading: loadingZustand } = zustandStore.getState();
-
-    useEffect(() => {
-      if (!loadingZustand && !authenticated) {
-        // TODO: enqueue a toast message to inform the user that he needs to login
-
-        router.push(
-          `${serviceLinks.auth.login}?to=${serviceLinks.accountDashboard}`
-        );
-      } else {
-        setIsLoading(false);
-      }
-    }, [loadingZustand, authenticated]);
-
-    return !isLoading ? <Component {...props} /> : null;
-  };
-
-  return AuthenticatedComponent;
-};
