@@ -51,7 +51,7 @@ export const Config = () => {
           >
             <Avatar
               xs="small"
-              src={account?.profile?.avatar}
+              src={account?.avatar}
               alt={account?.name}
               title={account?.name}
               backgroundColor="basic"

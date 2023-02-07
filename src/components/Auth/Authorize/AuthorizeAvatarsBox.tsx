@@ -23,7 +23,7 @@ export const AuthorizeAvatarsBox = ({ appData }) => {
           </Typography>
 
           <Avatar
-            src={account?.profile?.avatar}
+            src={account?.avatar}
             alt={account?.name}
             title={account?.name}
             backgroundColor="basic"
