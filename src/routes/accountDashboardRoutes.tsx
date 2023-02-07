@@ -35,6 +35,12 @@ export const ACCOUNT_DASHBOARD_ROUTES = [
     icon: <LayersThree01Icon />,
     link: `${serviceLinks.accountDashboard}/apps`,
   },
+  {
+    type: "ITEM",
+    label: "App Profiles",
+    icon: <User01Icon />,
+    link: `${serviceLinks.accountDashboard}/apps/profiles`,
+  },
 
   /* 
     @ ACCOUNT ROUTES
@@ -50,6 +56,7 @@ export const ACCOUNT_DASHBOARD_ROUTES = [
     icon: <User01Icon />,
     link: `${serviceLinks.accountDashboard}/profile`,
   },
+
   {
     type: "ITEM",
     label: "Sessions",

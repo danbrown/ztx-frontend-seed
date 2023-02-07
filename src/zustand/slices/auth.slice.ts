@@ -43,6 +43,7 @@ export interface SliceType {
     accountId: string,
     accountData: IEditAccountParameters
   ) => Promise<IAccount>;
+  dispatchAccountGetAllProfiles: () => Promise<IAccountProfile[]>;
 }
 
 // Interfaces
@@ -66,12 +67,14 @@ export interface IAccount {
   isDeleted: boolean;
   isAdminDeleted: boolean;
 
-  profile?: {
-    content: string;
-  };
+  profile?: IAccountProfile;
 
   createdAt: string;
   updatedAt: string;
+}
+
+export interface IAccountProfile {
+  content: any;
 }
 
 export interface ISession {
@@ -535,6 +538,25 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         resolve(updatedAccount);
       } catch (e) {
         console.log("Unable to update account");
+        console.log(e);
+
+        reject();
+      }
+    });
+  },
+
+  // + Get account profiles
+  dispatchAccountGetAllProfiles: async () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const profilesRequest = await apiWorker.get(
+          `/auth/accounts/@me/profiles`
+        );
+        const profiles = profilesRequest.data;
+
+        resolve(profiles);
+      } catch (e) {
+        console.log("Unable to get profiles");
         console.log(e);
 
         reject();
