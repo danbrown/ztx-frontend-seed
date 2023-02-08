@@ -2,7 +2,7 @@
   "name": "consumeragain",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 5002",
+    "dev": "next dev -p 5001",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

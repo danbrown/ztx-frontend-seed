@@ -19,31 +19,24 @@ export interface SliceType {
   session: ISession | null;
 
   // @ AUTHENTICATION
-  dispatchLogin: (params: ILoginParameters) => Promise<ISession & IError>;
+  dispatchLogin: () => Promise<ISession & IError>;
   dispatchLogout: (params?: ILogoutParameters) => Promise<void>;
-  dispatchRegister: (
-    params: IRegisterParameters
-  ) => Promise<{ message: string }>;
-  dispatchPasswordReset: (email: string) => Promise<void>;
-  dispatchPasswordTokenValidate: (token: string) => Promise<void>;
 
   // dispatchAuthorize: (account: any) => void;
 
   // @ SESSIONS
   dispatchSessionInit: () => Promise<ISession | null>;
-  dispatchSessionGetAll: () => Promise<ISession[]>;
   dispatchSessionRefresh: () => Promise<ISession & IError>;
   dispatchSessionRemove: (sessionToken: string) => Promise<void>;
-  dispatchSessionRemoveAll: () => Promise<void>;
 
   // @ ACCOUNTS
   // dispatchAccountGet: (accountId: string) => Promise<iAccount>;
   // dispatchAccountGetAll: () => Promise<iAccount[]>;
-  dispatchAccountUpdate: (
-    accountId: string,
-    accountData: IEditAccountParameters
-  ) => Promise<IAccount>;
-  dispatchAccountGetAllProfiles: () => Promise<IAccountProfile[]>;
+  // dispatchProfileUpdate: (
+  //   accountId: string,
+  //   profileData: IEditProfileParameters
+  // ) => Promise<IAccount>;
+  // dispatchProfileGet: () => Promise<IAccountProfile[]>;
 }
 
 // Interfaces
@@ -102,34 +95,12 @@ export interface IError {
   };
 }
 
-export interface ILoginParameters {
-  identifier: string;
-  password: string;
-  userAgent?: string;
-}
-
 export interface ILogoutParameters {
   sessionToken?: string;
 }
 
-export interface IRegisterParameters {
-  username: string;
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-export interface IEditAccountParameters {
-  name: string;
-
-  avatar: string;
-  bio: string;
-  cover: string;
-
-  profile?: {
-    content: string;
-  };
+export interface IEditProfileParameters {
+  content: string;
 }
 
 // Slice
@@ -143,35 +114,30 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
 
   // @ AUTHENTICATION
   // + Handle account login
-  dispatchLogin: async ({ identifier, password, userAgent }) => {
+  dispatchLogin: async () => {
     return new Promise(async (resolve, reject) => {
-      // login the account
-      const loginRequest = await apiWorker.post(`/auth/login`, {
-        identifier,
-        password,
-        userAgent,
-      });
-
-      // login failed
-      if (loginRequest.data?.error) {
-        return reject(loginRequest.data);
-      }
-
-      const newSession = loginRequest.data;
-
-      // set the session cookie
-      await selfApiWorker.post(`/api/auth`, {
-        session: newSession,
-      });
-
-      // set the session in the store
-      set((state) => ({
-        authenticated: true,
-        account: newSession.account,
-        session: newSession,
-      }));
-
-      resolve(newSession);
+      //   // login the account
+      //   const loginRequest = await apiWorker.post(`/auth/login`, {
+      //     identifier,
+      //     password,
+      //     userAgent,
+      //   });
+      //   // login failed
+      //   if (loginRequest.data?.error) {
+      //     return reject(loginRequest.data);
+      //   }
+      //   const newSession = loginRequest.data;
+      //   // set the session cookie
+      //   await selfApiWorker.post(`/api/auth`, {
+      //     session: newSession,
+      //   });
+      //   // set the session in the store
+      //   set((state) => ({
+      //     authenticated: true,
+      //     account: newSession.account,
+      //     session: newSession,
+      //   }));
+      //   resolve(newSession);
     });
   },
 
@@ -208,50 +174,6 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         session: null,
       }));
 
-      resolve();
-    });
-  },
-
-  // TODO + Handle user registration
-  dispatchRegister: async ({
-    confirmPassword,
-    email,
-    name,
-    password,
-    username,
-  }) => {
-    return new Promise(async (resolve, reject) => {
-      // check if passwords match
-      if (password !== confirmPassword) {
-        return reject({ error: { message: "Passwords do not match" } });
-      }
-
-      // register the account
-      const result = await apiWorker.post(`/auth/register`, {
-        username,
-        name,
-        email,
-        password,
-      });
-
-      if (result.data?.error) {
-        return reject(result.data);
-      }
-
-      resolve({ message: "Registration successful" });
-    });
-  },
-
-  // TODO + Handle password reset
-  dispatchPasswordReset: async (email) => {
-    return new Promise((resolve, reject) => {
-      resolve();
-    });
-  },
-
-  // TODO + Handle password reset token validation
-  dispatchPasswordTokenValidate: async (token) => {
-    return new Promise((resolve, reject) => {
       resolve();
     });
   },
@@ -335,23 +257,6 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
         }));
 
         resolve(null);
-      }
-    });
-  },
-
-  // + Handle get all sessions
-  dispatchSessionGetAll: async () => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const sessionsRequest = await apiWorker.get(`/auth/sessions`);
-        const sessions = sessionsRequest.data;
-
-        resolve(sessions);
-      } catch (e) {
-        console.log("Unable to get sessions");
-        console.log(e);
-
-        reject();
       }
     });
   },
@@ -486,78 +391,6 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
           await get().dispatchLogout();
           await selfApiWorker.post(`/api/auth/logout`);
         }
-
-        reject();
-      }
-    });
-  },
-
-  // + Handle remove all sessions
-  dispatchSessionRemoveAll: async () => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        await apiWorker.delete(`/auth/sessions`);
-        console.log("Removed all sessions");
-
-        // logout the user
-        await get().dispatchLogout();
-
-        resolve();
-      } catch (e) {
-        console.log("Unable to remove all sessions");
-        console.log(e);
-
-        // logout the user
-        await get().dispatchLogout();
-
-        reject();
-      }
-    });
-  },
-
-  // @ ACCOUNT
-  // + Handle account update
-  dispatchAccountUpdate: async (accountId: string, accountData: IAccount) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const accountRequest = await apiWorker.put(
-          `/auth/accounts/${accountId}`,
-          accountData
-        );
-        const updatedAccount = accountRequest.data;
-
-        // update the account in the store
-        set((state) => ({
-          account: updatedAccount,
-          session: {
-            ...state.session,
-            account: updatedAccount,
-          },
-        }));
-
-        resolve(updatedAccount);
-      } catch (e) {
-        console.log("Unable to update account");
-        console.log(e);
-
-        reject();
-      }
-    });
-  },
-
-  // + Get account profiles
-  dispatchAccountGetAllProfiles: async () => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const profilesRequest = await apiWorker.get(
-          `/auth/accounts/@me/profiles`
-        );
-        const profiles = profilesRequest.data;
-
-        resolve(profiles);
-      } catch (e) {
-        console.log("Unable to get profiles");
-        console.log(e);
 
         reject();
       }

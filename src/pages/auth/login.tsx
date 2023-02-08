@@ -1,7 +1,7 @@
 import { Spacing, useTheme } from "@wipsie/ui";
 import { AuthLayout } from "@layouts/AuthLayout/AuthLayout";
 import { LoginForm } from "@components/Auth/Login/LoginForm";
-import { ZetahexAppLogo } from "@components/ZetahexAppLogo";
+import { AppLogo } from "@components/AppLogo";
 import { useZustandStore } from "@zustand/ZustandStoreProvider";
 import { AuthUserProfile } from "@components/Auth/AuthUserProfile";
 import { useEffect } from "react";
@@ -30,7 +30,7 @@ export default function LoginPage(props) {
       justify="center"
     >
       <Spacing height={2} />
-      <ZetahexAppLogo />
+      <AppLogo />
       <Spacing height={2} />
 
       {authenticated ? <AuthUserProfile /> : <LoginForm />}

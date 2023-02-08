@@ -1,23 +1,10 @@
 import { useState } from "react";
-import {
-  Flex,
-  Link,
-  Accordion,
-  Button,
-  Box,
-  Container,
-  Hidden,
-  Fixed,
-  IconButton,
-  responsive,
-  useTheme,
-} from "@wipsie/ui";
-import { MenuOutlined, CloseOutlined } from "@ant-design/icons";
+import { Flex, Container, Hidden, IconButton, useTheme } from "@wipsie/ui";
+import { MenuOutlined } from "@ant-design/icons";
 import ThemeSwitch from "@layouts/common/ThemeSwitch";
-import { ZetahexAppLogo } from "@components/ZetahexAppLogo";
+import { AppLogo } from "@components/AppLogo";
 import { Config } from "@layouts/common/Config";
 import { useScrollBlock } from "@hooks/useScrollBlock";
-import { LogoutButton } from "@layouts/common/LogoutButton";
 
 export const DefaultHeader = () => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -56,7 +43,7 @@ export const DefaultHeader = () => {
               onClick={handleMenuClick}
             />
           </Hidden>
-          <ZetahexAppLogo />
+          <AppLogo />
         </Flex>
 
         <Flex direction="row" align="center" justify="between">

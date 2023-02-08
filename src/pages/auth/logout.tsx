@@ -2,7 +2,7 @@ import { Loading, Spacing, Typography, useTheme } from "@wipsie/ui";
 import { useZustandStore } from "@zustand/ZustandStoreProvider";
 import { AuthLayout } from "@layouts/AuthLayout/AuthLayout";
 import { serviceLinks } from "@config/links";
-import { ZetahexAppLogo } from "@components/ZetahexAppLogo";
+import { AppLogo } from "@components/AppLogo";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
@@ -40,7 +40,7 @@ export default function LogoutPage(props) {
       justify="center"
     >
       <Spacing height={4} />
-      <ZetahexAppLogo />
+      <AppLogo />
       <Spacing height={2} />
 
       <Typography variant="h2" align="center">

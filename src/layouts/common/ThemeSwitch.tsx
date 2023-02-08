@@ -11,13 +11,13 @@ export default function ThemeSwitch(props: any) {
   const themesList = [
     "dark",
     "light",
-    // "danbrown",
-    // "neonlights",
-    // "swamp",
-    // "discord",
-    // "spotify",
-    // "whatsapp",
-    // "wipsie",
+    "danbrown",
+    "neonlights",
+    "swamp",
+    "discord",
+    "spotify",
+    "whatsapp",
+    "wipsie",
   ];
 
   return (

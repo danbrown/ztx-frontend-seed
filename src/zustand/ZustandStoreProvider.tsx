@@ -24,19 +24,12 @@ import {
   initialState as initialState_Auth,
   createSlice as createSlice_Auth,
 } from "./slices/auth.slice";
-import {
-  sliceName as sliceName_Apps,
-  SliceType as SliceType_Apps,
-  initialState as initialState_Apps,
-  createSlice as createSlice_Apps,
-} from "./slices/apps.slice";
 
 // & Scoped Types - Joint all slices into one type, scoped
 type ZustandStoreJoints = {
   [sliceName_Posts]: SliceType_Posts;
   [sliceName_Settings]: SliceType_Settings;
   [sliceName_Auth]: SliceType_Auth;
-  [sliceName_Apps]: SliceType_Apps;
 };
 
 // Here we add the loading property to each slice, loading is universal to the slices
@@ -59,7 +52,6 @@ const initialState: ZustandStoreInitialState = {
   ...initialState_Posts,
   ...initialState_Settings,
   ...initialState_Auth,
-  ...initialState_Apps,
 };
 
 // & Store
@@ -72,7 +64,6 @@ export const zustandStore = create<ZustandStoreState>()(
         ...createSlice_Posts(...a),
         ...createSlice_Settings(...a),
         ...createSlice_Auth(...a),
-        ...createSlice_Apps(...a),
       }),
 
       {

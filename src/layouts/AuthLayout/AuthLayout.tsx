@@ -1,15 +1,4 @@
-import {
-  Box,
-  Fixed,
-  Flex,
-  Hidden,
-  IconButton,
-  Page,
-  PageProps,
-  Spacing,
-  useTheme,
-  useWidth,
-} from "@wipsie/ui";
+import { Box, Flex, Page, PageProps, useTheme, useWidth } from "@wipsie/ui";
 import { Head, HeadProps } from "@components/Head";
 import { RecaptchaProvider } from "@components/Recaptcha/RecaptchaProvider";
 
