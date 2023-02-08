@@ -36,9 +36,9 @@ export const Config = () => {
           }}
           content={
             <Container backgroundColor="highlight" p={1}>
-              <NextLink href={`${serviceLinks.accountDashboard}`}>
+              {/* <NextLink href={`${serviceLinks.accountDashboard}`}>
                 Dashboard
-              </NextLink>
+              </NextLink> */}
               <Spacing height={2} />
               <LogoutButton />
             </Container>

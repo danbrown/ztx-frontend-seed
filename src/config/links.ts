@@ -2,10 +2,8 @@ export const serviceLinks = {
   admin: `${process.env.NEXT_PUBLIC_ADMIN_SERVICE}`,
   main: `${process.env.NEXT_PUBLIC_MAIN_SERVICE}`,
   auth: {
-    login: `${process.env.NEXT_PUBLIC_MAIN_SERVICE}/auth/login`,
-    register: `${process.env.NEXT_PUBLIC_MAIN_SERVICE}/auth/register`,
+    login: `${process.env.NEXT_PUBLIC_API_GATEWAY_AUTHORIZE_URL}/?clientId=${process.env.NEXT_PUBLIC_API_GATEWAY_CLIENT_ID}`,
     logout: `${process.env.NEXT_PUBLIC_MAIN_SERVICE}/auth/logout`,
-    forgotPassword: `${process.env.NEXT_PUBLIC_MAIN_SERVICE}/auth/forgot-password`,
   },
 
   oauth: {

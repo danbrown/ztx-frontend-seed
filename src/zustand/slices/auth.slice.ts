@@ -19,7 +19,7 @@ export interface SliceType {
   session: ISession | null;
 
   // @ AUTHENTICATION
-  dispatchLogin: () => Promise<ISession & IError>;
+  dispatchLogin: (token: string) => Promise<ISession & IError>;
   dispatchLogout: (params?: ILogoutParameters) => Promise<void>;
 
   // dispatchAuthorize: (account: any) => void;
@@ -114,30 +114,36 @@ export const createSlice: StateCreator<ZustandStoreState, [], [], SliceType> = (
 
   // @ AUTHENTICATION
   // + Handle account login
-  dispatchLogin: async () => {
+  dispatchLogin: async (token: string) => {
     return new Promise(async (resolve, reject) => {
-      //   // login the account
-      //   const loginRequest = await apiWorker.post(`/auth/login`, {
-      //     identifier,
-      //     password,
-      //     userAgent,
-      //   });
-      //   // login failed
-      //   if (loginRequest.data?.error) {
-      //     return reject(loginRequest.data);
-      //   }
-      //   const newSession = loginRequest.data;
-      //   // set the session cookie
-      //   await selfApiWorker.post(`/api/auth`, {
-      //     session: newSession,
-      //   });
-      //   // set the session in the store
-      //   set((state) => ({
-      //     authenticated: true,
-      //     account: newSession.account,
-      //     session: newSession,
-      //   }));
-      //   resolve(newSession);
+      // login the account
+
+      if (!token) {
+        return reject({ error: { message: "No token provided" } });
+      }
+
+      const loginRequest = await apiWorker.post(`/auth/sessions/authorize`, {
+        token,
+      });
+
+      // login failed
+      if (loginRequest.data?.error) {
+        return reject(loginRequest.data);
+      }
+
+      const newSession = loginRequest.data;
+      // set the session cookie
+      await selfApiWorker.post(`/api/auth`, {
+        session: newSession,
+      });
+
+      // set the session in the store
+      set((state) => ({
+        authenticated: true,
+        account: newSession.account,
+        session: newSession,
+      }));
+      resolve(newSession);
     });
   },
 

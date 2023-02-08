@@ -1,13 +1,17 @@
-import { Container, Spacing, Typography, useTheme } from "@wipsie/ui";
+import { Button, Container, Spacing, Typography, useTheme } from "@wipsie/ui";
 import { DefaultLayout } from "@layouts/DefaultLayout/DefaultLayout";
 import { useZustandStore, useZustandSwr } from "@zustand/ZustandStoreProvider";
 import { SWR_POSTS_KEY } from "@zustand/slices/posts.slice";
 import { useTranslate } from "@hooks/useTranslation";
+import { useRouter } from "next/router";
 
 export default function Home(props) {
   const theme = useTheme();
+  const router = useRouter();
+  const { token } = router.query;
 
   const { posts } = useZustandSwr("posts", SWR_POSTS_KEY);
+  const { dispatchLogin } = useZustandStore("auth");
 
   const { translate } = useTranslate();
 
@@ -22,6 +26,22 @@ export default function Home(props) {
       <Typography variant="body1" color="subtext">
         Basic project setup with Next.js, TypeScript, I18n, Zustand, SWR, and
         Wipsie UI.
+      </Typography>
+
+      <Spacing height={2} />
+
+      <Typography variant="h6" color="primary">
+        Authorization token:
+        <br />
+        {token || "No token provided"}
+        {token && (
+          <>
+            <Spacing height={1} />
+            <Button onClick={() => dispatchLogin(token as string)}>
+              Login the user
+            </Button>
+          </>
+        )}
       </Typography>
 
       <Spacing height={2} />
