@@ -40,6 +40,11 @@
       "@translations/*": ["translations/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "../../StableDiffuser/dreamforge-new/src/utils/fixMediaUrl.ts"
+  ],
   "exclude": ["node_modules"]
 }

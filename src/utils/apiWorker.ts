@@ -57,44 +57,4 @@ apiWorker.interceptors.request.use(
   }
 );
 
-// + TOKEN REFRESH INTERCEPTOR ATT3 - ON FAIL
-// apiWorker.interceptors.response.use(
-//   (response) => {
-//     return response;
-//   },
-//   ({ config }) => {
-//     const originalRequest = config;
-
-//     return new Promise(async (resolve, reject) => {
-//       // If the error is a 401, then try to refresh the token
-//       if (!originalRequest._retry) {
-//         originalRequest._retry = true;
-
-//         const DEBUG = false; // true to enable alert and console logs
-//         DEBUG && alert("Intercepting request: " + JSON.stringify(config.url));
-
-//         // get the refresh and logout functions  from the store,
-//         const { dispatchSessionRefresh, dispatchLogout } =
-//           zustandStore.getState();
-
-//         try {
-//           const refreshedSession = await dispatchSessionRefresh();
-//           const bearer = `Bearer ${refreshedSession.accessToken}`;
-
-//           apiWorker.defaults.headers.token = bearer;
-//           originalRequest.headers.token = bearer;
-//           return resolve(true);
-//         } catch (error) {
-//           DEBUG && console.log("Refresh Error, logging out", error);
-//           dispatchLogout();
-
-//           return reject(error);
-//         }
-//       }
-
-//       return reject();
-//     });
-//   }
-// );
-
 export default apiWorker;
